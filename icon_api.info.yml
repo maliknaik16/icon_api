@@ -1,0 +1,6 @@
+name: Icon API
+description: Provides Icon integration throughout the Drupal.
+package: Icon API
+
+type: module
+core: 8.x
