@@ -1,0 +1,6 @@
+name: Font Awesome Bundle
+description: Font Awesome Bundle for the Icon API
+core: 8.x
+type: module
+dependencies:
+  - icon_api
