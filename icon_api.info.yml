@@ -4,3 +4,4 @@ package: Icon API
 
 type: module
 core: 8.x
+package: 'Icon API'
