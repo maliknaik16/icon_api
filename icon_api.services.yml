@@ -1,4 +1,0 @@
-services:
-  plugin.manager.icon_bundle:
-    class: Drupal\icon_api\IconBundleManager
-    arguments: ['@container.namespaces', '@cache.default', '@module_handler']
