@@ -1,5 +1,9 @@
 fontawesome_bundle.svg:
   remote: &fontawesome_bundle_remote https://use.fontawesome.com/releases/v5.8.2/fontawesome-free-5.8.2-web.zip
+  license: &fontawesome_bundle_svg_license
+    name: CC BY 4.0
+    url: https://fontawesome.com/license
+    gpl-compatible: true
   version: &fontawesome_bundle_version "5.8.2"
   js:
     /libraries/js/all.js: { minified: true }
@@ -39,6 +43,10 @@ fontawesome_bundle.svg.brands:
 
 fontawesome_bundle.webfonts:
   remote: *fontawesome_bundle_remote
+  license: &fontawesome_bundle_webfonts_license
+    name: SIL OFL 1.1
+    url: https://fontawesome.com/license
+    gpl-compatible: true
   version: *fontawesome_bundle_version
   css:
     theme:
