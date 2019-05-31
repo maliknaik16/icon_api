@@ -1,0 +1,92 @@
+fontawesome_bundle.svg:
+  remote: &fontawesome_bundle_remote https://use.fontawesome.com/releases/v5.8.2/fontawesome-free-5.8.2-web.zip
+  license: &fontawesome_bundle_svg_license
+    name: CC BY 4.0
+    url: https://fontawesome.com/license
+    gpl-compatible: true
+  version: &fontawesome_bundle_version "5.8.2"
+  js:
+    /libraries/js/all.js: { minified: true }
+
+fontawesome_bundle.svg.base:
+  version: *fontawesome_bundle_version
+  js:
+    /libraries/js/fontawesome.js: { minified: true }
+
+fontawesome_bundle.svg.solid:
+  version: *fontawesome_bundle_version
+  js:
+    /libraries/js/solid.js: { minified: true }
+  dependencies:
+    - fontawesome_bundle/fontawesome_bundle.svg.base
+
+fontawesome_bundle.svg.regular:
+  version: *fontawesome_bundle_version
+  js:
+    /libraries/js/regular.js: { minified: true }
+  dependencies:
+    - fontawesome_bundle/fontawesome_bundle.svg.base
+
+fontawesome_bundle.svg.light:
+  version: *fontawesome_bundle_version
+  js:
+    /libraries/js/light.js: { minified: true }
+  dependencies:
+    - fontawesome_bundle/fontawesome_bundle.svg.base
+
+fontawesome_bundle.svg.brands:
+  version: *fontawesome_bundle_version
+  js:
+    /libraries/js/brands.js: { minified: true }
+  dependencies:
+    - fontawesome_bundle/fontawesome_bundle.svg.base
+
+fontawesome_bundle.webfonts:
+  remote: *fontawesome_bundle_remote
+  license: &fontawesome_bundle_webfonts_license
+    name: SIL OFL 1.1
+    url: https://fontawesome.com/license
+    gpl-compatible: true
+  version: *fontawesome_bundle_version
+  css:
+    theme:
+      /libraries/css/all.css: { minified: true }
+
+fontawesome_bundle.webfonts.base:
+  version: *fontawesome_bundle_version
+  css:
+    theme:
+      /libraries/css/fontawesome.css: { minified: true }
+
+fontawesome_bundle.webfonts.solid:
+  version: *fontawesome_bundle_version
+  css:
+    theme:
+      /libraries/css/solid.css: { minified: true }
+  dependencies:
+    - fontawesome_bundle/fontawesome_bundle.webfonts.base
+
+fontawesome_bundle.webfonts.regular:
+  version: *fontawesome_bundle_version
+  css:
+    theme:
+      /libraries/css/regular.css: { minified: true }
+  dependencies:
+    - fontawesome_bundle/fontawesome_bundle.webfonts.base
+
+fontawesome_bundle.webfonts.light:
+  version: *fontawesome_bundle_version
+  css:
+    theme:
+      /libraries/css/light.css: { minified: tree }
+  dependencies:
+    - fontawesome_bundle/fontawesome_bundle.webfonts.base
+
+fontawesome_bundle.webfonts.brands:
+  version: *fontawesome_bundle_version
+  css:
+    theme:
+      /libraries/css/brands.css: { minified: true }
+  dependencies:
+    - fontawesome_bundle/fontawesome_bundle.webfonts.base
+
