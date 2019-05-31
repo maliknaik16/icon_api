@@ -1,0 +1,106 @@
+<?php
+
+/**
+ * @file
+ * Contains fontawesome_bundle.module
+ */
+
+use Drupal\Component\Utility\UrlHelper;
+
+/**
+ * Implements hook_page_attachements()
+ */
+function fontawesome_bundle_page_attachments(array &$page) {
+  // Load the configuration settings
+  $config_settings = \Drupal::config('fontawesome_bundle.settings');
+
+  if ($config_settings->get('use_solid') && $config_settings->get('use_light') && $config_settings->get('use_light') && $config_settings->get('use_brand')) {
+
+    // Attach all.js/all.cs library
+    $page['#attached']['library'][] = 'fontawesome_bundle/fontawesome_bundle.' . $config_settings->get('method');
+  }
+  else {
+
+    // If enabled then attach solid.js/solid.css
+    if ($config_settings->get('use_solid')) {
+      $page['#attached']['library'][] = 'fontawesome_bundle/fontawesome_bundle.' . $config_settings->get('method') . '.solid';
+    }
+
+    // If enabled then attach regular.js/regular.css
+    if ($config_settings->get('use_regular')) {
+      $page['#attached']['library'][] = 'fontawesome_bundle/fontawesome_bundle.' . $config_settings->get('method') . '.regular';
+    }
+
+    // If enabled then attach light.js/light.css
+    if ($config_settings->get('use_light')) {
+      $page['#attached']['library'][] = 'fontawesome_bundle/fontawesome_bundle.' . $config_settings->get('method') . '.light';
+    }
+
+    // If enabled then attach brands.js/brands.css
+    if ($config_settings->get('use_brand')) {
+      $page['#attached']['library'][] = 'fontawesome_bundle/fontawesome_bundle.' . $config_settings->get('method') . '.brand';
+    }
+  }
+}
+
+/**
+ * Implements hook_library_info_alter()
+ */
+
+function fontawesome_bundle_library_info_alter(&$libraries, $extension) {
+  // Alter the library info only for the fontawesome_bundle
+  if ($extension == 'fontawesome_bundle') {
+    // Load the configuration settings
+    $config_settings = \Drupal::config('fontawesome_bundle.settings');
+
+    if ($config_settings->get('use_cdn')) {
+      if (isset($config_settings->get('external_location'))) {
+        if (_fontawesome_bundle_validate_url($config_settings->get('external_location'))) {
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Validates the url of the external icon url
+ *
+ * @param string $url
+ *  The url to validate
+ *
+ * @return boolean
+ *  Whether the url is valid
+ */
+function _fontawesome_bundle_validate_url($url) {
+  if (!empty($url) && UrlHelper::isValid($url)) {
+    return TRUE;
+  }
+  return FALSE;
+}
+
+/**
+ * Returns currently enabled icon styles
+ */
+function _fontawesome_bundle_get_enabled_styles() {
+  $config_settings = \Drupal::config('fontawesome_bundle.settings');
+
+  $styles = [];
+
+  if ($config_settings['use_solid']) {
+    $styles[] = 'solid';
+  }
+
+  if ($config_settings['use_regular']) {
+    $styles[] = 'regular';
+  }
+
+  if ($config_settings['use_light']) {
+    $styles[] = 'light';
+  }
+
+  if($config_settings['use_brand']) {
+    $styles[] = 'brands';
+  }
+
+  return $styles;
+}
