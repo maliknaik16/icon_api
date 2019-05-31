@@ -86,19 +86,19 @@ function _fontawesome_bundle_get_enabled_styles() {
 
   $styles = [];
 
-  if ($config_settings['use_solid']) {
+  if ($config_settings->get('use_solid')) {
     $styles[] = 'solid';
   }
 
-  if ($config_settings['use_regular']) {
+  if ($config_settings->get('use_regular')) {
     $styles[] = 'regular';
   }
 
-  if ($config_settings['use_light']) {
+  if ($config_settings->get('use_light')) {
     $styles[] = 'light';
   }
 
-  if($config_settings['use_brand']) {
+  if($config_settings->get('use_brand')) {
     $styles[] = 'brands';
   }
 
