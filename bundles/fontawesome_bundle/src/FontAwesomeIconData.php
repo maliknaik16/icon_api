@@ -49,7 +49,7 @@ class FontAwesomeIconData {
       }
 
       // Cache the icons array
-      \Drupal::cache('data')->set('fontawesome_bundle.iconlist', $icons, strtotime('+1 week'), ['fontawesome_bundle', 'iconlist'])
+      \Drupal::cache('data')->set('fontawesome_bundle.iconlist', $icons, strtotime('+1 week'), ['fontawesome_bundle', 'iconlist']);
     }
     else {
       $icons = $icons->data;
