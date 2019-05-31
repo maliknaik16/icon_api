@@ -19,7 +19,7 @@ class AutocompleteController extends ControllerBase {
   /**
    * Handler for autocomplete request
    */
-   public static function handleIcons() {
+   public function handleIcons() {
     $response = [];
 
     // Get the value of q from the query string
@@ -35,8 +35,8 @@ class AutocompleteController extends ControllerBase {
         if(strpos($icon, $typed_string) === 0) {
           $response[] = [
             'value' => $icon,
-            'label' => $this->t('<i class=":prefix fa-:icon fa-fw fa-2x"></i> :icon', [
-              ':prefix' => FontAwesomeIconData::determinePrefix($icon_data[$icon]['styles']);
+            'label' => t('<i class=":prefix fa-:icon fa-fw fa-2x"></i> :icon', [
+              ':prefix' => FontAwesomeIconData::determinePrefix($icon_data[$icon]['styles']),
               ':icon' => $icon,
             ]),
           ];
