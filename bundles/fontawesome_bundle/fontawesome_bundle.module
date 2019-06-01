@@ -49,6 +49,49 @@ function fontawesome_bundle_page_attachments(array &$page) {
 }
 
 /**
+ * Implements hook_library_info_alter()
+ */
+function fontawesome_bundle_library_info_alter(&$libraries, $extension) {
+  // Alter the library info only for the fontawesome_bundle
+  if ($extension == 'fontawesome_bundle') {
+    // Load the configuration settings
+    $config_settings = \Drupal::config('fontawesome_bundle.settings');
+
+    // Fetch the enabled styles
+    $styles = _fontawesome_bundle_get_enabled_styles();
+
+    // Check if CDN is enabled and the External File location is set
+    if ($config_settings->get('use_cdn') && $config_settings->get('external_location')) {
+      // Check if all the styles are enabled
+      if (count($styles) == 4) {
+        _fontawesome_bundle_modify_library($libraries, $config_settings->get('method'), NULL, $config_settings->get('external_location'));
+      }
+      else {
+        if ($config_settings->get('use_solid')) {
+          _fontawesome_bundle_modify_library($libraries, $config_settings->get('method'), 'solid', $config_settings->get('external_location'));
+        }
+
+        $cdnComponents = parse_url($config_settings->get('external_location'));
+        $cdnComponents['path'] = explode('/', $cdnComponents['path']);
+        unset($cdnComponents['path'][count($cdnComponents['path']) - 1]);
+        unset($cdnComponents['path'][count($cdnComponents['path']) - 1]);
+        $cdnComponents['path'] = implode('/', $cdnComponents['path']) . '/';
+
+        foreach (['base', 'solid', 'regular', 'light', 'brands'] as $style) {
+          if (isset($libraries['fontawesome_bundle.' . $config_settings->get('method') . '.' . $style])) {
+            $cdnBase = $cdnComponents['path'];
+            $cdnBase = (strlen($cdnComponents['scheme']) > 0 ? $cdnComponents['scheme'] . '://' : '') . $cdnComponents['host'] . $cdnComponents['path'];
+            $cdnBase = $cdnBase . ($config_settings->get('method') == 'svg' ? 'js/' : 'css/');
+            $cdnBase .= ($style == 'base' ? 'fontawesome' : $style) . '.' . ($config_settings->get('method') == 'svg' ? 'js' : 'css');
+            _fontawesome_bundle_modify_library($libraries, $config_settings->get('method'), $style, $cdnBase);
+          }
+        }
+      }
+    }
+  }
+}
+
+/**
  * Validates the url of the external icon url
  *
  * @param string $url
