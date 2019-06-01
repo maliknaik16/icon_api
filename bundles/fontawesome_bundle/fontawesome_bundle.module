@@ -8,11 +8,13 @@
 use Drupal\Component\Utility\UrlHelper;
 
 /**
- * Implements hook_page_attachements()
+ * Implements hook_page_attachments()
  */
 function fontawesome_bundle_page_attachments(array &$page) {
   // Load the configuration settings
   $config_settings = \Drupal::config('fontawesome_bundle.settings');
+
+  $libraries = \Drupal::service('library.discovery')->getLibrariesByExtension('fontawesome_bundle');
 
   if ($config_settings->get('use_solid') && $config_settings->get('use_light') && $config_settings->get('use_light') && $config_settings->get('use_brand')) {
 
@@ -21,6 +23,9 @@ function fontawesome_bundle_page_attachments(array &$page) {
   }
   else {
 
+    if ($libraries['fontawesome_bundle.' . $config_settings->get('method') . '.base']) {
+      $page['#attached']['library'][] = 'fontawesome_bundle/fontawesome_bundle.' . $config_settings->get('method') . '.base';
+    }
     // If enabled then attach solid.js/solid.css
     if ($config_settings->get('use_solid')) {
       $page['#attached']['library'][] = 'fontawesome_bundle/fontawesome_bundle.' . $config_settings->get('method') . '.solid';
@@ -38,26 +43,7 @@ function fontawesome_bundle_page_attachments(array &$page) {
 
     // If enabled then attach brands.js/brands.css
     if ($config_settings->get('use_brand')) {
-      $page['#attached']['library'][] = 'fontawesome_bundle/fontawesome_bundle.' . $config_settings->get('method') . '.brand';
-    }
-  }
-}
-
-/**
- * Implements hook_library_info_alter()
- */
-
-function fontawesome_bundle_library_info_alter(&$libraries, $extension) {
-  // Alter the library info only for the fontawesome_bundle
-  if ($extension == 'fontawesome_bundle') {
-    // Load the configuration settings
-    $config_settings = \Drupal::config('fontawesome_bundle.settings');
-
-    if ($config_settings->get('use_cdn')) {
-      if (isset($config_settings->get('external_location'))) {
-        if (_fontawesome_bundle_validate_url($config_settings->get('external_location'))) {
-        }
-      }
+      $page['#attached']['library'][] = 'fontawesome_bundle/fontawesome_bundle.' . $config_settings->get('method') . '.brands';
     }
   }
 }
@@ -103,4 +89,30 @@ function _fontawesome_bundle_get_enabled_styles() {
   }
 
   return $styles;
+}
+
+/**
+ *
+ */
+function _fontawesome_bundle_modify_library(&$libraries, $type, $librarySuffix, $cdnLocation) {
+  $libraryName = 'fontawesome_bundle.' . $type;
+  if (!empty($librarySuffix)) {
+    $libraryName .= '.' . $librarySuffix;
+  }
+
+  // Alter library for 'svg' method
+  if ($type == 'svg') {
+    $libSettings = $libraries[$libraryName]['js'];
+    $libraries[$libraryName]['js'] = [
+      $cdnLocation => $libSettings,
+    ];
+  }
+
+  // Alter library for 'webfonts' method
+  if ($type == 'webfonts') {
+    $libSettings = $libraries[$libraryName]['css']['theme'];
+    $libraries[$libraryName]['css']['theme'] = [
+      $cdnLocation => $libSettings,
+    ];
+  }
 }
