@@ -18,11 +18,11 @@ use Drupal\icon_api\IconBundleBase;
  * )
  */
 
-class FontAwesomeBundle extends IcoNBundleBase {
+class FontAwesomeBundle extends IconBundleBase {
   /**
    * {@inheritdoc}
    */
-  public function getLibrary() {
-    return 'Sample Library';
+  public function getConfigRoute() {
+    return parent::getConfigRoute();
   }
 }
