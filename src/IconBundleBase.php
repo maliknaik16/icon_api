@@ -14,8 +14,22 @@ class IconBundleBase extends PluginBase implements IconBundleInterface {
   /**
    * {@inheritdoc}
    */
-  public function getLibrary() {
-    // TODO
+  public function getLabel() {
+    return $this->pluginDefinition['label'];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getDescription() {
+    return $this->pluginDefinition['description'];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getConfigRoute() {
+    return $this->pluginDefinition['config_route'];
   }
 
 }
