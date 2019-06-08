@@ -15,8 +15,18 @@ use Drupal\Component\Plugin\PluginInspectionInterface;
 interface IconBundleInterface extends PluginInspectionInterface {
 
   /**
-   * Returns the library path for the bundle
+   * Returns the label
    */
-  public function getLibrary();
+  public function getLabel();
+
+  /**
+   * Returns the description
+   */
+  public function getDescription();
+
+  /**
+   * Returns the route of the configuration
+   */
+  public function getConfigRoute();
 
 }
