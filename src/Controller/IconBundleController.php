@@ -110,7 +110,7 @@ class IconBundleController extends ControllerBase {
           '#links' => [
             'edit' => [
               'title' => $this->t('Configure Bundle'),
-              'url' => Url::fromRoute($bundle['config_route']),
+              'url' => Url::fromRoute($bundle['autocomplete_route']),
             ],
           ],
         ],
