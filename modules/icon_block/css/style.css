@@ -1,0 +1,8 @@
+div.icon-div-block {
+  position: relative;
+}
+div.icon-div-block::after {
+  content: "";
+  display: table;
+  clear: both;
+}
