@@ -44,5 +44,5 @@ class IconBundle extends Plugin {
    *
    * @var string
    */
-  public $config_route;
+  public $autocomplete_route;
 }
