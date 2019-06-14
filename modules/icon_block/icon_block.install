@@ -1,0 +1,13 @@
+<?php
+
+/**
+ * @file
+ * Contains Uninstall function for the icon block module.
+ */
+
+/**
+ * Implements hook_uninstall()
+ */
+function icon_block_uninstall() {
+  \Drupal::configFactory()->getEditable('icon_block.settings')->delete();
+}
