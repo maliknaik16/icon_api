@@ -1,0 +1,15 @@
+test_bundle.settings:
+  path: 'admin/config/icons/fontawesome'
+  defaults:
+    _form: '\Drupal\test_bundle\Form\TestSettingsForm'
+    _title: 'Font Awesome Settings'
+  requirements:
+    _permission: 'access administration pages'
+
+test_bundle.autocomplete:
+  path: '/test_bundle-autocomplete'
+  defaults:
+    _controller: '\Drupal\test_bundle\Controller\AutocompleteController::handleIcons'
+    _format: json
+  requirements:
+    _access: 'TRUE'

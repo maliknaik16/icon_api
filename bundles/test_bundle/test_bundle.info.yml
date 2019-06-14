@@ -1,0 +1,8 @@
+name: Test Bundle
+description: Sample bundle for testing the Icon API
+
+core: 8.x
+type: module
+package: 'Icon Bundle'
+dependencies:
+  - icon_api
