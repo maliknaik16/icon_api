@@ -1,0 +1,309 @@
+<?php
+
+/**
+ * @file
+ * Drupal integration of icon to blocks.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+
+/**
+ * Get the configuration.
+ */
+function icon_block_get_config_factory($settings) {
+  $config = \Drupal::config('icon_block.settings');
+  return $config;
+}
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
+function icon_block_preprocess_block(&$variables) {
+
+  $tags = 'icon_block.' . $variables['plugin_id'] . '.';
+  $config = \Drupal::config('icon_block.settings');
+
+  if ($config->get($tags . 'icon')) {
+    $icon = $config->get($tags . 'icon');
+    $tag = $config->get($tags . 'wrapper');
+    $wrapper_classes = explode(',', $config->get($tags . 'wrapper_class'));
+    $classes = '';
+    foreach ($wrapper_classes as $c) {
+      $classes .= trim($c) . ' ';
+    }
+
+    if ($tag != 'i' && $tag != 'span') {
+      $tag = 'i';
+    }
+
+    switch (trim($config->get($tags . 'position'))) {
+      case 'title_before':
+        $markup = '';
+        if (isset($variables['title_prefix']['#markup'])) {
+          $markup = $variables['title_prefix']['#markup'];
+        }
+        $variables['title_prefix']['#markup'] = t(_icon_block_get_icon_tag($tag, $icon, $classes)) . $markup;
+        break;
+
+      case 'title_after':
+        $markup = '';
+        if (isset($variables['title_suffix']['#markup'])) {
+          $markup = $variables['title_suffix']['#markup'];
+        }
+        $variables['title_suffix']['#markup'] = $markup . t(_icon_block_get_icon_tag($tag, $icon, $classes));
+        break;
+
+      case 'title_inside_before':
+        if (is_array($variables['label']) && isset($variables['label']['#markup'])) {
+          $variables['label']['#allowed_tags'][] = $tag;
+          $variables['label']['#markup'] = t(_icon_block_get_icon_tag($tag, $icon, $classes)) . $variables['label']['#markup'];
+        }
+        elseif (is_string($variables['label'])) {
+          $variables['label'] = t(_icon_block_get_icon_tag($tag, $icon, $classes) . $variables['label']);
+          if ($variables['configuration']['label_display'] == 'visible') {
+            $variables['configuration']['label'] = t(_icon_block_get_icon_tag($tag, $icon, $classes) . $variables['configuration']['label']);
+          }
+        }
+        break;
+
+      case 'title_inside_after':
+        if (is_array($variables['label']) && isset($variables['label']['#markup'])) {
+          $variables['label']['#allowed_tags'][] = $tag;
+          $variables['label']['#markup'] = $variables['label']['#markup'] . t(_icon_block_get_icon_tag($tag, $icon, $classes));
+        }
+        elseif (is_string($variables['label'])) {
+          $variables['label'] = t($variables['label'] . _icon_block_get_icon_tag($tag, $icon, $classes));
+          if ($variables['configuration']['label_display'] == 'visible') {
+            $variables['configuration']['label'] = t($variables['configuration']['label'] . _icon_block_get_icon_tag($tag, $icon, $classes));
+          }
+        }
+        break;
+
+      case 'content_before':
+        if (array_key_exists('#items', $variables['content'])) {
+          $arr = _icon_block_get_icon_list_tag($tag, $icon, $classes);
+          $variables['content']['#items'] = $arr + $variables['content']['#items'];
+        }
+        else {
+          $markup = array_key_exists('#markup', $variables['content']) ? $variables['content']['#markup'] : '';
+
+          $variables['content']['#markup'] = t('<div class="icon-div-block">' . _icon_block_get_icon_tag($tag, $icon, $classes) . '</div>') . $markup;
+        }
+        break;
+
+      case 'content_after':
+        if (array_key_exists('#items', $variables['content'])) {
+          $arr = _icon_block_get_icon_list_tag($tag, $icon, $classes);
+          $variables['content']['#items'] += $arr;
+        }
+        else {
+          $markup = array_key_exists('#markup', $variables['content']) ? $variables['content']['#markup'] : '';
+
+          $variables['content']['#markup'] = $markup . t('<div class="icon-div-block">' . _icon_block_get_icon_tag($tag, $icon, $classes) . '</div>');
+        }
+        break;
+
+      default:
+        // Do Nothing.
+    }
+  }
+}
+
+/**
+ * Get the icon tag.
+ */
+function _icon_block_get_icon_tag($tag, $icon, $classes) {
+  $markup = '<' . $tag . ' class="fa fa-' . $icon . ' ' . $classes . '"></' . $tag . '>';
+  return $markup;
+}
+
+/**
+ * Get the icon list tag.
+ */
+function _icon_block_get_icon_list_tag($tag, $icon, $classes) {
+  if ($tag != 'i' || $tag != 'span') {
+    $tag = 'i';
+  }
+
+  $arr['icon.list'] = [
+    'is_expanded' => FALSE,
+    'is_collapsed' => FALSE,
+    'in_active_trail' => FALSE,
+    'title' => t('<div class="icon-div-block"><:tag class="fa fa-:icon :class"></:tag></div>', [
+      ':tag' => $tag,
+      ':icon' => $icon,
+      ':class' => $classes,
+    ]),
+    'url' => \Drupal\Core\Url::fromUri('http://drupal.org/'),
+    'attributes' => new \Drupal\Core\Template\Attribute([
+      'class' => ['icon_block_icon-link', 'menu-item'],
+    ]),
+  ];
+
+  return $arr;
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter()
+ */
+
+function icon_block_form_block_form_alter(array &$form, FormStateInterface &$form_state, $form_id) {
+  $settings = $form_state->getFormObject()->getEntity()->getPluginId();
+
+  $config = icon_block_get_config_factory($settings);
+  $tag = 'icon_block.' . $settings . '.';
+  $access = \Drupal::currentUser()->hasPermission('administer block icons');
+
+  // Get the icon bundle list
+  $icon_manager = \Drupal::service('plugin.manager.icon_bundle');
+  $icon_definitions = $icon_manager->getDefinitions();
+  $icon_bundle = array();
+  foreach($icon_definitions as $icon_definition) {
+    $icon_bundle[$icon_definition['autocomplete_route']] = $icon_definition['label'];
+  }
+
+  $form['settings']['icon_selector'] = array(
+    '#type' => 'details',
+    '#tree' => TRUE,
+    '#title' => t('Icon'),
+    '#open' => TRUE,
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+    '#access' => $access,
+  );
+
+  $form['settings']['icon_selector']['icon_bundle'] = array(
+    '#type' => 'select',
+    '#title' => t('Icon Bundle'),
+    '#description' => t('Choose the icon bundle to display the icons using the autocomplete.'),
+    '#default_value' => key($icon_bundle),
+    '#options' => $icon_bundle,
+    '#ajax' => [
+      'callback' => '_icon_block_update_icon_bundle',
+      'event' => 'change',
+      'wrapper' => 'icon-field-wrapper'
+    ],
+  );
+
+  $form['settings']['icon_selector']['icon'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Select Icon'),
+    '#field_prefix' => 'fa-',
+    '#prefix' => '<div id="icon-field-wrapper">',
+    '#suffix' => '</div>',
+    '#default_value' => $config->get($tag . 'icon') ? $config->get($tag . 'icon') : '',
+    '#autocomplete_route_name' => isset($form_state->getValue('settings')['icon_selector']['icon_bundle']) ? $form_state->getValue('settings')['icon_selector']['icon_bundle'] : key($icon_bundle),
+  );
+
+  $form['settings']['icon_selector']['wrapper'] = array(
+    '#type' => 'select',
+    '#title' => t('Icon Wrapper'),
+    '#description' => t('Choose an HTML element to wrap the icon with.'),
+    '#default_value' => $config->get($tag . 'wrapper') ? $config->get($tag . 'wrapper') : 'i',
+    '#options' => array(
+      'i' => t('i'),
+      'span' => t('span'),
+    ),
+    '#states' => array(
+      'invisible' => array(
+        ':input[name="settings[icon_selector][icon]"]' => array(
+          'value' => ''
+        ),
+      )
+    ),
+  );
+
+  $form['settings']['icon_selector']['wrapper_class'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Icon Wrapper Classes'),
+    '#description' => t('A space separated list of CSS classes.'),
+    '#default_value' => $config->get($tag . 'wrapper_class') ? $config->get($tag . 'wrapper_class') : '',
+    '#states' => array(
+      'invisible' => array(
+        array(':input[name="settings[icon_selector][wrapper]"]' => array(
+          'value' => 'None'
+        )),
+        'and',
+        array(':input[name="settings[icon_selector][icon]"]' => array(
+          'value' => ''
+        )),
+      )
+    ),
+  );
+
+  $form['settings']['icon_selector']['position'] = array(
+    '#type' => 'select',
+    '#title' => t('Position'),
+    '#default_value' => $config->get($tag . 'position') ? $config->get($tag . 'position') : 'title_before',
+    '#options' => array(
+      'title_before' => t('Before title'),
+      'title_after' => t('After title'),
+      'title_inside_before' => t('Before title (inside markup)'),
+      'title_inside_after' => t('After title (inside markup)'),
+      'content_before' => t('Before content'),
+      'content_after' => t('After content'),
+    ),
+    '#states' => array(
+      'invisible' => array(
+        ':input[name="settings[icon_selector][icon]"]' => array(
+          'value' => ''
+        ),
+      )
+    ),
+  );
+
+  if($access) {
+    $form['actions']['submit']['#submit'][] = '_icon_block_submit_value';
+  }
+}
+
+/**
+ * Update the autocomplete value
+ */
+function _icon_block_update_icon_bundle(array &$form, FormStateInterface $form_state) {
+  return $form['settings']['icon_selector']['icon'];
+  /*
+  return [
+    '#type' => 'textfield',
+    '#title' => t('Select Icon'),
+    '#field_prefix' => 'fa-',
+    '#prefix' => '<div id="icon-field-wrapper">',
+    '#suffix' => '</div>',
+    '#value' => $form_state->getValue('settings')['icon_selector']['position'] ? $form_state->getValue('settings')['icon_selector']['position'] : ($config->get($tag . 'icon') ? $config->get($tag . 'icon') : ''),
+    '#attributes' => [
+      'name' => 'settings[icon_selector][icon]',
+      'id' => 'edit-settings-icon-selector-icon',
+      'data-drupal-selector' => 'edit-settings-icon-selector-icon',
+      'class' => 'form-text',
+    ],
+  ];*/
+}
+
+/**
+ * Storing the icon information
+ */
+function _icon_block_submit_value(array $form, FormStateInterface $form_state) {
+
+  $config = \Drupal::configFactory()->getEditable('icon_block.settings');
+  $settings = $form_state->getFormObject()->getEntity()->getPluginId();
+
+  $values = $form_state->getValue('settings')['icon_selector'];
+  $tag = 'icon_block.' . $settings . '.';
+
+  $config->set($tag . 'icon', $values['icon'])
+    ->set($tag . 'wrapper', $values['wrapper'])
+    ->set($tag . 'wrapper_class', $values['wrapper_class'])
+    ->set($tag . 'position', $values['position'])
+    ->save();
+}
+
+/**
+ * Implements hook_page_attachments()
+ */
+function icon_block_page_attachments(array &$page) {
+  // Adding CSS
+  $page['#attached']['library'][] = 'icon_block/icon_block_custom_css';
+
+  // Adding JS
+  $page['#attached']['library'][] = 'icon_block/icon_block_custom_js';
+}
