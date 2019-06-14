@@ -1,0 +1,8 @@
+name: Icon Block
+description: Provides icon integration with blocks
+package: Icon API
+type: module
+core: 8.x
+dependencies:
+  - icon_api
+  - drupal:block
