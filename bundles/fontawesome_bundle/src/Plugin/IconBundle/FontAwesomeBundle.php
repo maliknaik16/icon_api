@@ -14,7 +14,7 @@ use Drupal\icon_api\IconBundleBase;
  *  id = "fontawesome_bundle",
  *  label = @Translation("Font Awesome Bundle"),
  *  description = @Translation("A icon bundle which integrates the icons from the fontawesome icons."),
- *  config_route = "fontawesome_bundle.settings",
+ *  autocomplete_route = "fontawesome_bundle.autocomplete",
  * )
  */
 
