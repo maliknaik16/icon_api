@@ -135,7 +135,7 @@ function _fontawesome_bundle_get_enabled_styles() {
 }
 
 /**
- *
+ * Alter the library info
  */
 function _fontawesome_bundle_modify_library(&$libraries, $type, $librarySuffix, $cdnLocation) {
   $libraryName = 'fontawesome_bundle.' . $type;
