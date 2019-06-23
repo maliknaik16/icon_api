@@ -1,0 +1,17 @@
+<?php
+
+/**
+ * Implements hook_theme()
+ */
+function icon_api_theme($existing, $type, $theme, $path) {
+  return [
+    'icon_api' => [
+      'variables' => [
+        'bundle' => NULL,
+        'icon' => NULL,
+        'attributes' => array(),
+        'wrapper' => 'i'
+      ],
+    ],
+  ];
+}
