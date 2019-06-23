@@ -1,0 +1,9 @@
+name: 'Icon Filter'
+description: 'Provides a filter for text fields to replace an icon token with icon markup.'
+core: 8.x
+type: module
+package: 'Icon API'
+
+dependencies:
+  - drupal:filter
+  - icon_api
