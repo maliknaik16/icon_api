@@ -1,0 +1,347 @@
+<?php
+
+/**
+ * @file
+ * Contains icon_menu.module
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Render\Markup;
+
+/**
+ * Implements template_preprocess_menu()
+ */
+function icon_menu_preprocess_menu(&$variables) {
+
+  $config = \Drupal::config('icon_menu.settings');
+  $prefix = 'icon_menu.';
+
+  foreach ($variables['items'] as $item) {
+    $plugin_id = $item['original_link']->getPluginId();
+    $key = $prefix . $plugin_id;
+    if ($config->get($key)) {
+      $tags = $key . '.';
+      $title_classes = '';
+      $classes = '';
+
+      $icon = $config->get($tags . 'icon');
+      $tag = $config->get($tags . 'wrapper');
+      $wrapper_classes = explode(',', $config->get($tags . 'wrapper_class'));
+      $position = $config->get($tags . 'position');
+      $breadcrumb = $config->get($tags . 'breadcrumb');
+      $title_wrapper = $config->get($tags . 'title_wrapper');
+      $title_wrapper_element = $config->get($tags . 'title_wrapper_element');
+      $title_wrapper_class = explode(',', $config->get($tags . 'title_wrapper_class'));
+
+      foreach ($wrapper_classes as $c) {
+        $classes .= trim($c) . ' ';
+      }
+
+      if ($title_wrapper) {
+        foreach ($title_wrapper_class as $c) {
+          $title_classes .= trim($c) . ' ';
+        }
+
+        if ($title_wrapper_element != 'i' && $title_wrapper_element != 'span') {
+          $title_wrapper_element = 'i';
+        }
+      }
+
+      if ($tag != 'i' && $tag != 'span') {
+        $tag = 'i';
+      }
+
+      $title = $variables['items'][$plugin_id]['title'];
+
+      if(isset($position)) {
+        $variables['items'][$plugin_id]['title'] = _icon_menu_get_icon_tag($tag, $icon, $classes, $title, $position);
+      }
+
+      /*
+
+      switch ($position) {
+        case 'title_before':
+          $variables['items'][$plugin_id]['title'] = t(_icon_menu_get_icon_tag($tag, $icon, $classes) . $title);
+          break;
+        case 'title_after':
+         $variables['items'][$plugin_id]['title'] = _icon_menu_get_icon_tag($tag, $icon, $classes, $title, $position);
+          break;
+        case 'title_invisible':
+          $variables['items'][$plugin_id]['title'] = t(_icon_menu_get_icon_tag($tag, $icon, $classes) . '<span class="visually-hidden focusable">' . $variables['items'][$plugin_id]['title'] . '</span>');
+          break;
+        case 'title_replace':
+          $variables['items'][$plugin_id]['title'] = t(_icon_menu_get_icon_tag($tag, $icon, $classes));
+          break;
+      }*/
+    }
+
+    /*
+    if($item['original_link']->getPluginId() == 'menu_link_content:f954fbbc-7d77-419a-9304-d8114fe36ee2') {
+      $variables['items']['menu_link_content:f954fbbc-7d77-419a-9304-d8114fe36ee2']['title'] = t('<i class="fa fa-search"></i>My Blog Testing');
+    //ksm($variables['items']['menu_link_content:f954fbbc-7d77-419a-9304-d8114fe36ee2']);
+    }*/
+  }
+}
+
+/**
+ * Generates the tag of the icon
+ */
+function _icon_menu_get_icon_tag($tag, $icon, $classes, $title, $position) {
+
+  $markup = '<' . $tag . ' class="fa fa-' . $icon . ' ' . $classes . '"></' . $tag . '>';
+
+  switch ($position) {
+    case 'title_before':
+      $markup .= $title;
+      break;
+    case 'title_after':
+      $markup = $title . $markup;
+      break;
+    case 'title_invisible':
+      $markup .= '<span class="visually-hidden focusable">' . $title . '</span>';
+      break;
+    case 'title_replace':
+      $markup = $markup . '';
+      break;
+  }
+
+  return Markup::create($markup);
+}
+
+/**
+ * Returns Icon Bundle options
+ */
+function _icon_menu_get_installed_bundles() {
+  // Get the icon bundle list
+  $icon_manager = \Drupal::service('plugin.manager.icon_bundle');
+  $icon_definitions = $icon_manager->getDefinitions();
+  $icon_bundle = array();
+
+  foreach($icon_definitions as $icon_definition) {
+    $icon_bundle[$icon_definition['autocomplete_route']] = $icon_definition['label'];
+  }
+
+  return $icon_bundle;
+}
+/**
+ * Implements hook_form_alter()
+ */
+function icon_menu_form_alter(array &$form, FormStateInterface $form_state, $form_id) {
+  if ($form_id == 'menu_link_edit' || $form_id == 'menu_link_content_menu_link_content_form') {
+
+
+    $settings = '';
+    if ($form_id == 'menu_link_edit') {
+      $settings = $form_state->getBuildInfo()['args'][0]->getPluginId();
+    }
+    if ($form_id == 'menu_link_content_menu_link_content_form') {
+      $settings = $form_state->getBuildInfo()['callback_object']->getEntity()->getPluginId();
+    }
+
+    $config = \Drupal::config('icon_menu.settings');
+    $tag = 'icon_menu.' . $settings . '.';
+    $access = \Drupal::currentUser()->hasPermission('administer menu icons');
+
+    $icon_bundle = _icon_menu_get_installed_bundles();
+
+
+    $form['options']['icon_selector'] = array(
+      '#type' => 'details',
+      '#tree' => TRUE,
+      '#title' => t('Icon'),
+      '#open' => TRUE,
+      '#collapsible' => TRUE,
+      '#collapsed' => FALSE,
+      '#access' => $access,
+    );
+
+    $form['options']['icon_selector']['icon_bundle'] = array(
+      '#type' => 'select',
+      '#title' => t('Icon Bundle'),
+      '#description' => t('Choose the icon bundle to display the icons using the autocomplete.'),
+      '#default_value' => key($icon_bundle),
+      '#options' => $icon_bundle,
+      '#ajax' => [
+        'callback' => '_icon_menu_update_icon_bundle',
+        'event' => 'change',
+        'wrapper' => 'icon_menu-field-wrapper'
+      ],
+    );
+
+    $form['options']['icon_selector']['icon'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Search Icon'),
+      //'#field_prefix' => 'fa-',
+      '#prefix' => '<div id="icon_menu-field-wrapper">',
+      '#suffix' => '</div>',
+      '#default_value' => $config->get($tag . 'icon') ? $config->get($tag . 'icon') : '',
+      '#autocomplete_route_name' => $form_state->getValue('icon_selector')['icon_bundle'] ? $form_state->getValue('icon_selector')['icon_bundle'] : key($icon_bundle),
+    );
+
+    $form['options']['icon_selector']['wrapper'] = array(
+      '#type' => 'select',
+      '#title' => t('Icon Wrapper'),
+      '#description' => t('Choose an HTML element to wrap the icon with.'),
+      '#default_value' => $config->get($tag . 'wrapper') ? $config->get($tag . 'wrapper') : 'i',
+      '#options' => array(
+        'i' => t('i'),
+        'span' => t('span'),
+      ),
+      '#states' => array(
+        'invisible' => array(
+          ':input[name="icon_selector[icon]"]' => array(
+            'value' => ''
+          ),
+        )
+      ),
+    );
+
+    $form['options']['icon_selector']['wrapper_class'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Icon Wrapper Classes'),
+      '#description' => t('A space separated list of CSS classes.'),
+      '#default_value' => $config->get($tag . 'wrapper_class') ? $config->get($tag . 'wrapper_class') : '',
+      '#states' => array(
+        'invisible' => array(
+          array(':input[name="icon_selector[wrapper]"]' => array(
+            'value' => 'None'
+          )),
+          'and',
+          array(':input[name="icon_selector[icon]"]' => array(
+            'value' => ''
+          )),
+        )
+      ),
+    );
+
+    $form['options']['icon_selector']['position'] = array(
+      '#type' => 'select',
+      '#title' => t('Position'),
+      '#default_value' => $config->get($tag . 'position') ? $config->get($tag . 'position') : 'title_before',
+      '#options' => array(
+        'title_before' => t('Before title'),
+        'title_after' => t('After title'),
+        'title_invisible' => t('Invisible title'),
+        'title_replace' => t('Replace title'),
+      ),
+      '#states' => array(
+        'invisible' => array(
+          ':input[name="icon_selector[icon]"]' => array(
+            'value' => '',
+          ),
+        )
+      ),
+    );
+
+    //$icon_state = array('invisible' => array(':input[name="' . $parents . '[icon]"]' => array('value' => '')));
+
+    $form['options']['icon_selector']['breadcrumb'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Show in breadcrumbs'),
+      '#description' => t('Choose whether to show the icon in breadcrumb links.'),
+      '#default_value' => $config->get($tag . 'breadcrumb') ? $config->get($tag . 'breadcrumb') : FALSE,
+      '#states' => [
+        'invisible' => [
+          ':input[name="icon_selector[icon]"]' => [
+            'value' => '',
+          ],
+        ],
+      ],
+    );
+
+    $form['options']['icon_selector']['title_wrapper'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Title Wrapper'),
+      '#description' => t('Choose whether to wrap the title in a element tag or not.'),
+      '#default_value' => $config->get($tag . 'title_wrapper') ? $config->get($tag . 'title_wrapper') : FALSE,
+      '#states' => [
+        'invisible' => [
+          ':input[name="icon_selector[icon]"]' => [
+            'value' => '',
+          ],
+        ],
+      ],
+    );
+
+    $wrap_state = [
+      'visible' => [
+        ':input[name="icon_selector[title_wrapper]"]' => [
+          'checked' => TRUE,
+        ],
+      ],/*
+      'invisible' => [
+        ':input[name="icon_selector[icon]"]' => [
+          'value' => '',
+        ],
+      ],*/
+    ];
+
+    $form['options']['icon_selector']['title_wrapper_element'] = array(
+      '#type' => 'select',
+      '#title' => t('Title Wrapper Element'),
+      '#description' => t('The type of element to use for the title wrapper.'),
+      '#default_value' => $config->get($tag . 'title_wrapper_element') ? $config->get($tag . 'title_wrapper_element') : 'i',
+      '#options' => array(
+        'i' => t('i'),
+        'span' => t('span'),
+      ),
+      '#states' => $wrap_state,
+    );
+
+    $form['options']['icon_selector']['title_wrapper_class'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Title Wrapper Class'),
+      '#description' => t('The classes to apply to the title wrapper'),
+      '#default_value' => $config->get($tag . 'title_wrapper_class') ? $config->get($tag . 'title_wrapper_class') : '',
+      '#states' => $wrap_state,
+    );
+
+    if($access) {
+      $form['actions']['submit']['#submit'][] = '_icon_menu_submit_value';
+    }
+  }
+}
+
+/**
+ * Returns the form field for the ajax request
+ */
+function _icon_menu_update_icon_bundle(array &$form, FormStateInterface $form_state) {
+  return $form['icon_selector']['icon'];
+}
+
+/**
+ * Storing the menu configuration information
+ */
+function _icon_menu_submit_value(array $form, FormStateInterface $form_state) {
+  $config = \Drupal::configFactory()->getEditable('icon_menu.settings');
+  $form_id = $form['#form_id'];
+
+  $settings = '';
+
+  if ($form_id == 'menu_link_edit') {
+    $settings = $form_state->getBuildInfo()['args'][0]->getPluginId();
+  }
+
+  if ($form_id == 'menu_link_content_menu_link_content_form') {
+    $settings = $form_state->getBuildInfo()['callback_object']->getEntity()->getPluginId();
+  }
+
+  $values = $form_state->getValue('icon_selector');
+  $tag = 'icon_menu.' . $settings . '.';
+
+  $config->set($tag . 'icon_bundle', $values['icon_bundle'])
+    ->set($tag . 'icon', $values['icon'])
+    ->set($tag . 'wrapper', $values['wrapper'])
+    ->set($tag . 'wrapper_class', $values['wrapper_class'])
+    ->set($tag . 'position', $values['position'])
+    ->set($tag . 'breadcrumb', $values['breadcrumb'])
+    ->set($tag . 'title_wrapper', $values['title_wrapper'])
+    ->set($tag . 'title_wrapper_element', $values['title_wrapper_element'])
+    ->set($tag . 'title_wrapper_class', $values['title_wrapper_class'])
+    ->save();
+
+  // Clear the render cache to display the updated changes
+  \Drupal::service('cache.render')->invalidateAll();
+  //\Drupal::cache('block')->invalidateAll();
+}
+
