@@ -1,0 +1,8 @@
+name: 'Icon Menu'
+description: 'Provides icon integration with menu items.'
+core: 8.x
+type: module
+package: 'Icon API'
+
+dependencies:
+  - icon_api
