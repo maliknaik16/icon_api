@@ -1,0 +1,8 @@
+{#
+  Icon API Twig template for displaying the icon
+#}
+{% set default_class = '' %}
+{% if attributes is empty %}
+  {% set default_class = 'fa-2x' %}
+{% endif %}
+<{{ wrapper }} class="fa fa-{{ icon }} {{ default_class }} {{ attributes|join(' ') }}"></{{ wrapper }}>
