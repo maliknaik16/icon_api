@@ -192,6 +192,8 @@ class FontAwesomeSettingsForm extends ConfigFormBase {
       ->set('use_brand', $values['partial']['use_brand'])
       ->save();
 
+    drupal_flush_all_caches();
+
     parent::submitForm($form, $form_state);
   }
 }
