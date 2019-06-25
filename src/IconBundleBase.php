@@ -28,8 +28,15 @@ class IconBundleBase extends PluginBase implements IconBundleInterface {
   /**
    * {@inheritdoc}
    */
-  public function getConfigRoute() {
+  public function getAutocompleteRoute() {
     return $this->pluginDefinition['autocomplete_route'];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getConfigRoute() {
+    return $this->pluginDefinition['config_route'];
   }
 
 }

@@ -25,8 +25,12 @@ interface IconBundleInterface extends PluginInspectionInterface {
   public function getDescription();
 
   /**
-   * Returns the route of the configuration
+   * Returns the autocomplete route
+   */
+  public function getAutocompleteRoute();
+
+  /**
+   * Returns the autocomplete route
    */
   public function getConfigRoute();
-
 }

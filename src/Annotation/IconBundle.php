@@ -45,4 +45,11 @@ class IconBundle extends Plugin {
    * @var string
    */
   public $autocomplete_route;
+
+  /**
+   * The route of the autcomplete controller
+   *
+   * @var string
+   */
+  public $config_route;
 }

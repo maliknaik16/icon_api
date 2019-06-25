@@ -1,5 +1,5 @@
 test_bundle.settings:
-  path: 'admin/config/icons/fontawesome'
+  path: 'admin/config/icons/test'
   defaults:
     _form: '\Drupal\test_bundle\Form\TestSettingsForm'
     _title: 'Font Awesome Settings'

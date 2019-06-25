@@ -49,6 +49,9 @@ function fontawesome_bundle_page_attachments(array &$page) {
 }
 
 /**
+ *
+ */
+/**
  * Implements hook_library_info_alter()
  */
 function fontawesome_bundle_library_info_alter(&$libraries, $extension) {

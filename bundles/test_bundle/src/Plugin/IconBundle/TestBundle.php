@@ -15,6 +15,7 @@ use Drupal\icon_api\IconBundleBase;
  *  label = @Translation("Test Bundle"),
  *  description = @Translation("A sample icon bundle to test the plugin system"),
  *  autocomplete_route = "test_bundle.autocomplete",
+ *  config_route = "test_bundle.settings",
  * )
  */
 
