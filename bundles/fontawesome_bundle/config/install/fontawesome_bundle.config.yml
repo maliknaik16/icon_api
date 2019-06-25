@@ -1,7 +1,7 @@
 method: 'svg'
 use_cdn: FALSE
-external_location: ''
-use_solid: FALSE
+external_location: 'https://use.fontawesome.com/releases/v5.8.2/js/all.js'
+use_solid: TRUE
 use_regular: FALSE
 use_light: FALSE
 use_brand: FALSE

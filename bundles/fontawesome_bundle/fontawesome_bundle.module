@@ -16,6 +16,56 @@ function fontawesome_bundle_page_attachments(array &$page) {
 
   $libraries = \Drupal::service('library.discovery')->getLibrariesByExtension('fontawesome_bundle');
 
+  $config_defaults = '';
+
+  if (!$config_settings) {
+    $config_defaults = _fontawesome_bundle_defaults();
+  }
+  else {
+    $config_defaults = [
+      'method' => $config_settings->get('method'),
+      'use_cdn' => $config_settings->get('use_cdn'),
+      'external_location' => $config_settings->get('external_location'),
+      'use_solid' => $config_settings->get('use_solid'),
+      'use_regular' => $config_settings->get('use_regular'),
+      'use_light' => $config_settings->get('use_light'),
+      'use_brand' => $config_settings->get('use_brand'),
+    ];
+  }
+
+  if ($config_defaults['use_solid'] && $config_defaults['use_light'] && $config_defaults['use_light'] && $config_defaults['use_brand']) {
+
+    // Attach all.js/all.cs library
+    $page['#attached']['library'][] = 'fontawesome_bundle/fontawesome_bundle.' . $config_defaults['method'];
+  }
+  else {
+
+    if ($libraries['fontawesome_bundle.' . $config_defaults['method'] . '.base']) {
+      $page['#attached']['library'][] = 'fontawesome_bundle/fontawesome_bundle.' . $config_defaults['method'] . '.base';
+    }
+    // If enabled then attach solid.js/solid.css
+    if ($config_defaults['use_solid']) {
+      $page['#attached']['library'][] = 'fontawesome_bundle/fontawesome_bundle.' . $config_defaults['method'] . '.solid';
+    }
+
+    // If enabled then attach regular.js/regular.css
+    if ($config_defaults['use_regular']) {
+      $page['#attached']['library'][] = 'fontawesome_bundle/fontawesome_bundle.' . $config_defaults['method'] . '.regular';
+    }
+
+    // If enabled then attach light.js/light.css
+    if ($config_defaults['use_light']) {
+      $page['#attached']['library'][] = 'fontawesome_bundle/fontawesome_bundle.' . $config_defaults['method'] . '.light';
+    }
+
+    // If enabled then attach brands.js/brands.css
+    if ($config_defaults['use_brand']) {
+      $page['#attached']['library'][] = 'fontawesome_bundle/fontawesome_bundle.' . $config_defaults['method'] . '.brands';
+    }
+  }
+
+  /*
+
   if ($config_settings->get('use_solid') && $config_settings->get('use_light') && $config_settings->get('use_light') && $config_settings->get('use_brand')) {
 
     // Attach all.js/all.cs library
@@ -45,12 +95,24 @@ function fontawesome_bundle_page_attachments(array &$page) {
     if ($config_settings->get('use_brand')) {
       $page['#attached']['library'][] = 'fontawesome_bundle/fontawesome_bundle.' . $config_settings->get('method') . '.brands';
     }
-  }
+  }*/
 }
 
 /**
- *
+ * Default values for the configuration
  */
+function _fontawesome_bundle_defaults() {
+  return [
+    'method' => 'svg',
+    'use_cdn' => FALSE,
+    'external_location' => 'https://use.fontawesome.com/releases/v5.8.2/js/all.js',
+    'use_solid' => TRUE,
+    'use_regular' => FALSE,
+    'use_light' => FALSE,
+    'use_brand' => FALSE,
+  ];
+}
+
 /**
  * Implements hook_library_info_alter()
  */
@@ -63,6 +125,51 @@ function fontawesome_bundle_library_info_alter(&$libraries, $extension) {
     // Fetch the enabled styles
     $styles = _fontawesome_bundle_get_enabled_styles();
 
+    $config_defaults = '';
+    if (!$config_settings) {
+      $config_defaults = _fontawesome_bundle_defaults();
+    }
+    else {
+      $config_defaults = [
+        'method' => $config_settings->get('method'),
+        'use_cdn' => $config_settings->get('use_cdn'),
+        'external_location' => $config_settings->get('external_location'),
+        'use_solid' => $config_settings->get('use_solid'),
+        'use_regular' => $config_settings->get('use_regular'),
+        'use_light' => $config_settings->get('use_light'),
+        'use_brand' => $config_settings->get('use_brand'),
+      ];
+    }
+
+    // Check if CDN is enabled and the External File location is set
+    if ($config_defaults['use_cdn'] && $config_defaults['external_location']) {
+      // Check if all the styles are enabled
+      if (count($styles) == 4) {
+        _fontawesome_bundle_modify_library($libraries, $config_defaults['method'], NULL, $config_defaults['external_location']);
+      }
+      else {
+        if ($config_defaults['use_solid']) {
+          _fontawesome_bundle_modify_library($libraries, $config_defaults['method'], 'solid', $config_defaults['external_location']);
+        }
+
+        $cdnComponents = parse_url($config_defaults['external_location']);
+        $cdnComponents['path'] = explode('/', $cdnComponents['path']);
+        unset($cdnComponents['path'][count($cdnComponents['path']) - 1]);
+        unset($cdnComponents['path'][count($cdnComponents['path']) - 1]);
+        $cdnComponents['path'] = implode('/', $cdnComponents['path']) . '/';
+
+        foreach (['base', 'solid', 'regular', 'light', 'brands'] as $style) {
+          if (isset($libraries['fontawesome_bundle.' . $config_defaults['method'] . '.' . $style])) {
+            $cdnBase = $cdnComponents['path'];
+            $cdnBase = (strlen($cdnComponents['scheme']) > 0 ? $cdnComponents['scheme'] . '://' : '') . $cdnComponents['host'] . $cdnComponents['path'];
+            $cdnBase = $cdnBase . ($config_defaults['method'] == 'svg' ? 'js/' : 'css/');
+            $cdnBase .= ($style == 'base' ? 'fontawesome' : $style) . '.' . ($config_defaults['method'] == 'svg' ? 'js' : 'css');
+            _fontawesome_bundle_modify_library($libraries, $config_defaults['method'], $style, $cdnBase);
+          }
+        }
+      }
+    }
+    /*
     // Check if CDN is enabled and the External File location is set
     if ($config_settings->get('use_cdn') && $config_settings->get('external_location')) {
       // Check if all the styles are enabled
@@ -90,7 +197,7 @@ function fontawesome_bundle_library_info_alter(&$libraries, $extension) {
           }
         }
       }
-    }
+    }*/
   }
 }
 
@@ -116,21 +223,34 @@ function _fontawesome_bundle_validate_url($url) {
 function _fontawesome_bundle_get_enabled_styles() {
   $config_settings = \Drupal::config('fontawesome_bundle.settings');
 
+  $config_defaults = '';
+  if (!$config_settings) {
+    $config_defaults = _fontawesome_bundle_defaults();
+  }
+  else {
+    $config_defaults = [
+      'use_solid' => $config_settings->get('use_solid'),
+      'use_regular' => $config_settings->get('use_regular'),
+      'use_light' => $config_settings->get('use_light'),
+      'use_brand' => $config_settings->get('use_brand'),
+    ];
+  }
+
   $styles = [];
 
-  if ($config_settings->get('use_solid')) {
+  if ($config_defaults['use_solid']) {
     $styles[] = 'solid';
   }
 
-  if ($config_settings->get('use_regular')) {
+  if ($config_defaults['use_regular']) {
     $styles[] = 'regular';
   }
 
-  if ($config_settings->get('use_light')) {
+  if ($config_defaults['use_light']) {
     $styles[] = 'light';
   }
 
-  if($config_settings->get('use_brand')) {
+  if($config_defaults['use_brand']) {
     $styles[] = 'brands';
   }
 
