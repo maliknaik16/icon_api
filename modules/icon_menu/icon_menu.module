@@ -42,9 +42,11 @@ function icon_menu_preprocess_menu(&$variables) {
           $title_classes .= trim($c) . ' ';
         }
 
-        if ($title_wrapper_element != 'i' && $title_wrapper_element != 'span') {
-          $title_wrapper_element = 'i';
+        if ($title_wrapper_element != 'span' && $title_wrapper_element != 'div') {
+          $title_wrapper_element = 'span';
         }
+
+
       }
 
       if ($tag != 'i' && $tag != 'span') {
@@ -54,7 +56,7 @@ function icon_menu_preprocess_menu(&$variables) {
       $title = $variables['items'][$plugin_id]['title'];
 
       if(isset($position)) {
-        $variables['items'][$plugin_id]['title'] = _icon_menu_get_icon_tag($tag, $icon, $classes, $title, $position);
+        $variables['items'][$plugin_id]['title'] = _icon_menu_get_icon_tag($tag, $icon, $classes, $title, $position, $title_wrapper, $title_wrapper_element, $title_classes);
       }
 
       /*
@@ -86,9 +88,13 @@ function icon_menu_preprocess_menu(&$variables) {
 /**
  * Generates the tag of the icon
  */
-function _icon_menu_get_icon_tag($tag, $icon, $classes, $title, $position) {
+function _icon_menu_get_icon_tag($tag, $icon, $classes, $title, $position, $title_wrapper, $title_wrapper_element, $title_classes) {
 
   $markup = '<' . $tag . ' class="fa fa-' . $icon . ' ' . $classes . '"></' . $tag . '>';
+
+  if ($title_wrapper) {
+    $title = '<' . $title_wrapper_element . ' ' . (!empty($title_classes) ? 'class="' . $title_classes . '"' : '') . '> ' . $title . '</' . $title_wrapper_element . '>';
+  }
 
   switch ($position) {
     case 'title_before':
@@ -282,8 +288,8 @@ function icon_menu_form_alter(array &$form, FormStateInterface $form_state, $for
       '#description' => t('The type of element to use for the title wrapper.'),
       '#default_value' => $config->get($tag . 'title_wrapper_element') ? $config->get($tag . 'title_wrapper_element') : 'i',
       '#options' => array(
-        'i' => t('i'),
         'span' => t('span'),
+        'div' => t('div'),
       ),
       '#states' => $wrap_state,
     );
@@ -345,3 +351,9 @@ function _icon_menu_submit_value(array $form, FormStateInterface $form_state) {
   //\Drupal::cache('block')->invalidateAll();
 }
 
+/**
+ * Implements hook_preprocess_breadcrumb()
+ */
+function icon_menu_preprocess_breadcrumb(&$variables) {
+  //ksm($variables);
+}
