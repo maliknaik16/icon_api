@@ -181,15 +181,15 @@ function icon_block_form_block_form_alter(array &$form, FormStateInterface &$for
     '#ajax' => [
       'callback' => '_icon_block_update_icon_bundle',
       'event' => 'change',
-      'wrapper' => 'icon-field-wrapper'
+      'wrapper' => 'icon_block-field-wrapper'
     ],
   );
 
   $form['settings']['icon_selector']['icon'] = array(
     '#type' => 'textfield',
-    '#title' => t('Select Icon'),
-    '#field_prefix' => 'fa-',
-    '#prefix' => '<div id="icon-field-wrapper">',
+    '#title' => t('Search Icon'),
+    //'#field_prefix' => 'fa-',
+    '#prefix' => '<div id="icon_block-field-wrapper">',
     '#suffix' => '</div>',
     '#default_value' => $config->get($tag . 'icon') ? $config->get($tag . 'icon') : '',
     '#autocomplete_route_name' => isset($form_state->getValue('settings')['icon_selector']['icon_bundle']) ? $form_state->getValue('settings')['icon_selector']['icon_bundle'] : key($icon_bundle),
@@ -262,21 +262,6 @@ function icon_block_form_block_form_alter(array &$form, FormStateInterface &$for
  */
 function _icon_block_update_icon_bundle(array &$form, FormStateInterface $form_state) {
   return $form['settings']['icon_selector']['icon'];
-  /*
-  return [
-    '#type' => 'textfield',
-    '#title' => t('Select Icon'),
-    '#field_prefix' => 'fa-',
-    '#prefix' => '<div id="icon-field-wrapper">',
-    '#suffix' => '</div>',
-    '#value' => $form_state->getValue('settings')['icon_selector']['position'] ? $form_state->getValue('settings')['icon_selector']['position'] : ($config->get($tag . 'icon') ? $config->get($tag . 'icon') : ''),
-    '#attributes' => [
-      'name' => 'settings[icon_selector][icon]',
-      'id' => 'edit-settings-icon-selector-icon',
-      'data-drupal-selector' => 'edit-settings-icon-selector-icon',
-      'class' => 'form-text',
-    ],
-  ];*/
 }
 
 /**
