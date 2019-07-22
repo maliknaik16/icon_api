@@ -11,6 +11,7 @@ To install this module you must have an Drupal 8 installed and then follow the f
 
 # Sub Modules
 This module comes with 5 sub modules which are currently in alpha version and they are listed below:
+* Font Awesome Bundle (Icon Bundle for all the following sub-modules)
 * Icon Block
 * Icon Menu
 * Icon Filter
@@ -23,4 +24,4 @@ This module comes with 5 sub modules which are currently in alpha version and th
 # Links
 The following are the links related to this projects:
 * [Google Summer of Code Project Link](https://summerofcode.withgoogle.com/projects/#6018773419556864)
-* [Icon API Drupal Modules page](https://www.drupal.org/project/icon_api)
+* [Icon API Drupal Module page](https://www.drupal.org/project/icon_api)
