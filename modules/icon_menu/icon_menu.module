@@ -133,13 +133,18 @@ function _icon_menu_get_installed_bundles() {
  * Implements hook_form_alter()
  */
 function icon_menu_form_alter(array &$form, FormStateInterface $form_state, $form_id) {
-  if ($form_id == 'menu_link_edit' || $form_id == 'menu_link_content_menu_link_content_form') {
 
+  // Disable support for 'menu_link_edit' temporarily.
+  if ($form_id == 'menu_link_content_menu_link_content_form') {
+    // $form_id == 'menu_link_edit') {
 
     $settings = '';
+    /*
+    // Disable this snippet
     if ($form_id == 'menu_link_edit') {
       $settings = $form_state->getBuildInfo()['args'][0]->getPluginId();
     }
+    */
     if ($form_id == 'menu_link_content_menu_link_content_form') {
       $settings = $form_state->getBuildInfo()['callback_object']->getEntity()->getPluginId();
     }
