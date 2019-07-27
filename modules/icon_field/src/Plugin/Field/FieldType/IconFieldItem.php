@@ -17,6 +17,7 @@ use Drupal\Core\TypedData\DataDefinition;
  *  id = "icon_field",
  *  label = @Translation("Icon Field"),
  *  description = @Translation("Store a bundle and icon in the database to assemble an icon field."),
+ *  category = @Translation("Icons"),
  *  default_widget = "icon_field_widget",
  *  default_formatter = "icon_field_formatter"
  * )
