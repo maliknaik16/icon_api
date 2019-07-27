@@ -40,7 +40,7 @@ class IconFieldFormatter extends FormatterBase {
     foreach($items as $delta => $item) {
       $elements[$delta] = [
         '#type' => 'markup',
-        '#markup' => 'Bundle: ' . $item->bundle . '<br/> Icon' . $item->icon,
+        '#markup' => '<p>Testing</p>', //'Bundle: ' . $item->bundle . '<br/> Icon' . $item->icon,
       ];
     }
 
