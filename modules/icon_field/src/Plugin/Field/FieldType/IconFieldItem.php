@@ -49,13 +49,23 @@ class IconFieldItem extends FieldItemBase {
   public static function propertyDefinitions(FieldStorageDefinitionInterface $field_definition) {
     $properties = [];
     $properties['bundle'] = DataDefinition::create('string')
-      ->setLabel(t("Icon Bundle"))
-      ->setDescription(t("Machine name of the icon bundle."));
+      ->setLabel(t('Icon Bundle'))
+      ->setDescription(t('Machine name of the icon bundle.'));
 
     $properties['icon'] = DataDefinition::create('string')
-      ->setLabel(t("Icon Name"))
-      ->setDescription(t("The name of the icon."));
+      ->setLabel(t('Icon Name'))
+      ->setDescription(t('The name of the icon.'));
 
     return $properties;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function isEmpty() {
+    $bundle = $this->get('bundle')->getValue();
+    $icon = $this->get('icon')->getValue();
+
+    return $bundle === NULL || $bundle === '' || $icon === NULL || $icon === '';
   }
 }
