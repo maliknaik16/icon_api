@@ -24,4 +24,23 @@ use Drupal\Core\Form\FormStateInterface;
  * )
  */
 class IconFieldWidget extends WidgetBase {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
+    $element['bundle'] = [
+      '#title' => $this->t('Icon Bundle machine name:'),
+      '#type' => 'textfield',
+      '#default_value' => isset($items[$delta]->bundle) ? $items[$delta]->bundle : '',
+    ];
+
+    $element['icon'] = [
+      '#title' => $this->t('Icon name: '),
+      '#type' => 'textfield',
+      '#default_value' => isset($items[$delta]->icon) ? $items[$delta]->icon : '',
+    ];
+
+    return $element;
+  }
 }
