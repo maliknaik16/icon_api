@@ -23,4 +23,27 @@ use Drupal\Core\Form\FormStateInterface;
  * )
  */
 class IconFieldFormatter extends FormatterBase {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function settingsForm(array $form, FormStateInterface $form_state) {
+    return [];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function viewElements(FieldItemListInterface $items, $langcode) {
+    $elements = [];
+
+    foreach($items as $delta => $item) {
+      $elements[$delta] = [
+        '#type' => 'markup',
+        '#markup' => 'Bundle: ' . $item->bundle . '<br/> Icon' . $item->icon,
+      ];
+    }
+
+    return $elements;
+  }
 }
