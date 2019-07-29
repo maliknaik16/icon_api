@@ -14,7 +14,7 @@ use Drupal\Core\Form\FormStateInterface;
 /**
  * Plugin implementation of 'icon_field' formatter.
  *
- * @FieldFormatter (
+ * @FieldFormatter(
  *  id = "icon_field_formatter",
  *  label = @Translation("Icon"),
  *  field_types = {
@@ -34,13 +34,27 @@ class IconFieldFormatter extends FormatterBase {
   /**
    * {@inheritdoc}
    */
+  public function settingsSummary() {
+    $summary = [];
+    $summary[] = $this->t('Displays the icon.');
+
+    return $summary;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function viewElements(FieldItemListInterface $items, $langcode) {
     $elements = [];
 
     foreach($items as $delta => $item) {
       $elements[$delta] = [
-        '#type' => 'markup',
-        '#markup' => '<p>Testing</p>', //'Bundle: ' . $item->bundle . '<br/> Icon' . $item->icon,
+        '#type' => 'html_tag',
+        '#tag' => 'p',
+        '#value' => $this->t('Bundle is @bundle and Icon is @icon', [
+          '@bundle' => $item->bundle,
+          '@icon' => $item->icon,
+        ]),
       ];
     }
 
