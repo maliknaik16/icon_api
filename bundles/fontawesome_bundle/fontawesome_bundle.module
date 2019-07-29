@@ -45,6 +45,10 @@ function fontawesome_bundle_page_attachments(array &$page) {
     }
     // If enabled then attach solid.js/solid.css
     if ($config_defaults['use_solid']) {
+      $file_path = _fontawesome_bundle_get_file_path($libraries, $config_defaults['method'], 'solid');
+      if(!$config_defaults['use_cdn'] && !file_exists($file_path)) {
+        \Drupal::messenger()->addError('File solid.css does not exists.');
+      }
       $page['#attached']['library'][] = 'fontawesome_bundle/fontawesome_bundle.' . $config_defaults['method'] . '.solid';
     }
 
@@ -96,6 +100,22 @@ function fontawesome_bundle_page_attachments(array &$page) {
       $page['#attached']['library'][] = 'fontawesome_bundle/fontawesome_bundle.' . $config_settings->get('method') . '.brands';
     }
   }*/
+}
+
+/**
+ * Get the file path from the libraries
+ */
+function _fontawesome_bundle_get_file_path($libraries, $method, $style) {
+  $path = drupal_get_path('module', 'fontawesome_bundle') . '/';
+
+  if ($method == 'svg') {
+    $path .= $libraries['fontawesome_bundle.' . $method . '.' . $style]['js'][0]['data'];
+  }
+  else if ($method == 'webfonts') {
+    $path .= $libraries['fontawesome_bundle.' . $method . '.' . $style]['css'][0]['data'];
+  }
+
+  return $path;
 }
 
 /**
@@ -168,6 +188,7 @@ function fontawesome_bundle_library_info_alter(&$libraries, $extension) {
           }
         }
       }
+    }else{
     }
     /*
     // Check if CDN is enabled and the External File location is set
