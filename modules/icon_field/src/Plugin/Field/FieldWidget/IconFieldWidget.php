@@ -29,16 +29,19 @@ class IconFieldWidget extends WidgetBase {
    * {@inheritdoc}
    */
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
+    $bundle = isset($items[$delta]->bundle) ? $items[$delta]->bundle : '';
+    $icon = isset($items[$delta]->icon) ? $items[$delta]->icon : '';
+
     $element['bundle'] = [
       '#title' => $this->t('Icon Bundle machine name:'),
       '#type' => 'textfield',
-      '#default_value' => isset($items[$delta]->bundle) ? $items[$delta]->bundle : '',
+      '#default_value' => $bundle,
     ];
 
     $element['icon'] = [
       '#title' => $this->t('Icon name: '),
       '#type' => 'textfield',
-      '#default_value' => isset($items[$delta]->icon) ? $items[$delta]->icon : '',
+      '#default_value' => $icon,
     ];
 
     return $element;
