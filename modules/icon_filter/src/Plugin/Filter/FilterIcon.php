@@ -32,11 +32,7 @@ class FilterIcon extends FilterBase {
   public function process($text, $langcode) {
     $icons = array();
 
-    /*$replace = '<span class="celebrate-filter">' . $this->t('Good Times!') . '</span>';
-    $new_text = str_replace('[celebrate]', $replace, $text);*/
-
     if (preg_match_all($this->icon_filter_regex, $text, $matches, PREG_SET_ORDER)) {
-      ksm($matches);
       foreach ($matches as $match) {
         if (!isset($icons[$match[0]])) {
           $icons[$match[0]] = [
