@@ -41,6 +41,11 @@ class IconFieldItem extends FieldItemBase {
           'length' => 64,
           'not null' => FALSE,
         ],
+        'options' => [
+          'type' => 'text',
+          'size' => 'normal',
+          'not null' => FALSE,
+        ],
       ],
     ];
   }
@@ -57,6 +62,9 @@ class IconFieldItem extends FieldItemBase {
     $properties['icon'] = DataDefinition::create('string')
       ->setLabel(t('Icon Name'))
       ->setDescription(t('The name of the icon.'));
+
+    $properties['options'] = DataDefinition::create('string')
+      ->setLabel(t('Icon Options'));
 
     return $properties;
   }
