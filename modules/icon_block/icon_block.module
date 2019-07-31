@@ -275,7 +275,8 @@ function _icon_block_submit_value(array $form, FormStateInterface $form_state) {
   $values = $form_state->getValue('settings')['icon_selector'];
   $tag = 'icon_block.' . $settings . '.';
 
-  $config->set($tag . 'icon', $values['icon'])
+  $config->sett($tag . 'icon_bundle', $values['icon_bundle'])
+    ->set($tag . 'icon', $values['icon'])
     ->set($tag . 'wrapper', $values['wrapper'])
     ->set($tag . 'wrapper_class', $values['wrapper_class'])
     ->set($tag . 'position', $values['position'])
