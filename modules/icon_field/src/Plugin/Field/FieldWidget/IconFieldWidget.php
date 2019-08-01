@@ -10,6 +10,7 @@ namespace Drupal\icon_field\Plugin\Field\FieldWidget;
 use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
 
 /**
  * Plugin implementation of 'icon_field' widget.
@@ -104,7 +105,7 @@ class IconFieldWidget extends WidgetBase {
       ],
     ];
 
-    ksm($form);
+    //ksm($form);
 
     return $element;
   }
@@ -128,11 +129,14 @@ class IconFieldWidget extends WidgetBase {
   /**
    */
   public function updateIconField(array &$form, FormStateInterface $form_state) {
-    //ksm($form);
-    /*return [
-      '#type' => 'markup',
-      '#markup' => '<pre>' . $form . '</pre>', //'<h1>Hello, World</h1>',
-    ];*/
-    return $form['field_icon_field'][0]['icon'];
+    $icon_form = $form['field_icon_field']['widget']['0']['icon'];
+
+    $value = $form_state->getTriggeringElement()['#value'];
+
+    $icon_form['#autocomplete_route_name'] = $value;
+
+    $icon_form['#attributes']['data-autocomplete-path'] = Url::fromRoute($value)->toString();
+
+    return $icon_form;
   }
 }
