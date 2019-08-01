@@ -30,12 +30,15 @@ class IconFieldWidget extends WidgetBase {
    * {@inheritdoc}
    */
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
+    $field_name = $items->getFieldDefinition()->getName();
 
     $access = \Drupal::currentUser()->hasPermission('administer icons');
 
     $options = unserialize($items[$delta]->get('options')->getValue());
 
     $icon_bundle = $this->getInstalledIconBundles();
+
+    $form['#icon_field_name'] = $field_name;
 
     $element += [
       '#type' => 'details',
@@ -54,7 +57,7 @@ class IconFieldWidget extends WidgetBase {
       '#ajax' => [
         'callback' => [$this, 'updateIconField'],
         'event' => 'change',
-        'wrapper' => 'icon_field-field-wrapper'
+        'wrapper' => 'icon_field-field-wrapper',
       ],
     ];
 
@@ -129,7 +132,9 @@ class IconFieldWidget extends WidgetBase {
   /**
    */
   public function updateIconField(array &$form, FormStateInterface $form_state) {
-    $icon_form = $form['field_icon_field']['widget']['0']['icon'];
+    $field_name = $form['#icon_field_name'];
+
+    $icon_form = $form[$field_name]['widget']['0']['icon'];
 
     $value = $form_state->getTriggeringElement()['#value'];
 
