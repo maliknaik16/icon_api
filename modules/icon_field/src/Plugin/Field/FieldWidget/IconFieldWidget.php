@@ -39,6 +39,9 @@ class IconFieldWidget extends WidgetBase {
     $icon_bundle = $this->getInstalledIconBundles();
 
     $form['#icon_field_name'] = $field_name;
+    $form['#icon_field_delta'] = $delta;
+
+    $form_field_id = 'icon_field-field-wrapper-' . $field_name . '-' . $delta;
 
     $element += [
       '#type' => 'details',
@@ -57,14 +60,14 @@ class IconFieldWidget extends WidgetBase {
       '#ajax' => [
         'callback' => [$this, 'updateIconField'],
         'event' => 'change',
-        'wrapper' => 'icon_field-field-wrapper',
+        'wrapper' => $form_field_id,
       ],
     ];
 
     $element['icon'] = [
       '#title' => $this->t('Search Icon'),
       '#type' => 'textfield',
-      '#prefix' => '<div id="icon_field-field-wrapper">',
+      '#prefix' => '<div id="' . $form_field_id . '">',
       '#suffix' => '</div>',
       '#default_value' => $items[$delta]->get('icon')->getValue(),
       '#autocomplete_route_name' => $form_state->getValue('bundle') ? $form_state->getValue('bundle') : key($icon_bundle),
@@ -130,16 +133,25 @@ class IconFieldWidget extends WidgetBase {
   }
 
   /**
+   * Returns the 'Search icon' textfield
    */
   public function updateIconField(array &$form, FormStateInterface $form_state) {
+    // Get the delta
+    $delta = $form['#icon_field_delta'];
+
+    // Get the field name
     $field_name = $form['#icon_field_name'];
 
-    $icon_form = $form[$field_name]['widget']['0']['icon'];
+    // Get the textfield
+    $icon_form = $form[$field_name]['widget'][$delta]['icon'];
 
+    // Get the current icon bundle key
     $value = $form_state->getTriggeringElement()['#value'];
 
+    // Set the autocomplete route name to the current icon bundle key
     $icon_form['#autocomplete_route_name'] = $value;
 
+    // Set the autocomplete atttribute
     $icon_form['#attributes']['data-autocomplete-path'] = Url::fromRoute($value)->toString();
 
     return $icon_form;
