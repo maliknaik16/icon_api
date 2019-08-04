@@ -4,3 +4,20 @@
  * @file
  * Contains icon_field.module
  */
+
+/**
+ * Implements hook_theme()
+ */
+function icon_field_theme($existing, $type, $theme, $path) {
+  return [
+    'icon_field' => [
+      'variables' => [
+        'bundle' => NULL,
+        'icon' => NULL,
+        'wrapper' => 'i',
+        'wrapper_classes' => NULL,
+        'link' => NULL,
+      ],
+    ],
+  ];
+}

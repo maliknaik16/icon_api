@@ -1,0 +1,10 @@
+{#
+  Icon Field Twig template for displaying the icon
+#}
+{% if link is not empty %}
+  <a href="{{ link }}">
+{% endif %}
+<{{ wrapper }} class="fa fa-{{ icon }} {{ default_class }} {{ wrapper_classes|join(' ') }}"></{{ wrapper }}>
+{% if link is not empty %}
+  </a>
+{% endif %}

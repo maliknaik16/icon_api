@@ -34,17 +34,32 @@ class IconFieldItem extends FieldItemBase {
         'bundle' => [
           'type' => 'varchar',
           'length' => 64,
-          'not null' => FALSE,
+          'not null' => TRUE,
         ],
         'icon' => [
           'type' => 'varchar',
           'length' => 64,
-          'not null' => FALSE,
+          'not null' => TRUE,
         ],
-        'options' => [
+        'wrapper' => [
+          'type' => 'text',
+          'size' => 'small',
+          'not null' => TRUE,
+        ],
+        'wrapper_class' => [
+          'type' => 'text',
+          'size' => 'medium',
+          'not null' => TRUE,
+        ],
+        'use_link' => [
+          'type' => 'int',
+          'size' => 'tiny',
+          'not null' => TRUE,
+        ],
+        'icon_link' => [
           'type' => 'text',
           'size' => 'normal',
-          'not null' => FALSE,
+          'not null' => TRUE,
         ],
       ],
     ];
@@ -63,8 +78,21 @@ class IconFieldItem extends FieldItemBase {
       ->setLabel(t('Icon Name'))
       ->setDescription(t('The name of the icon.'));
 
-    $properties['options'] = DataDefinition::create('string')
-      ->setLabel(t('Icon Options'));
+    $properties['wrapper'] = DataDefinition::create('string')
+      ->setLabel(t('Icon wrapper'))
+      ->setDescription(t('HTML element to wrap the icon with.'));
+
+    $properties['wrapper_class'] = DataDefinition::create('string')
+      ->setLabel(t('Icon Wrapper Classes'))
+      ->setDescription(t('Custom css classes for the icon.'));
+
+    $properties['use_link'] = DataDefinition::create('boolean')
+      ->setLabel(t('Wrap Link around the Icon'))
+      ->setDescription(t('Wrapping the link around the icon.'));
+
+    $properties['icon_link'] = DataDefinition::create('string')
+      ->setLabel(t('Icon Link'))
+      ->setDescription(t('Link to wrap around the icon.'));
 
     return $properties;
   }

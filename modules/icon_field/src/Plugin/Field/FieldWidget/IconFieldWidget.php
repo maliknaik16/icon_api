@@ -34,7 +34,7 @@ class IconFieldWidget extends WidgetBase {
 
     $access = \Drupal::currentUser()->hasPermission('administer icons');
 
-    $options = unserialize($items[$delta]->get('options')->getValue());
+    //$options = unserialize($items[$delta]->get('options')->getValue());
 
     $icon_bundle = $this->getInstalledIconBundles();
 
@@ -53,6 +53,15 @@ class IconFieldWidget extends WidgetBase {
 
     $element['bundle'] = [
       '#title' => $this->t('Icon Bundle'),
+      '#type' => 'textfield',
+      '#description' => t('Icon bundle machine name'), //t('Choose the icon bundle to display the icons using the autocomplete.'),
+      '#default_value' => $items[$delta]->get('bundle')->getValue(),
+    ];
+
+    // TODO: Use the following code when the issue is fixed with the autocomplete update.
+    /*
+    $element['bundle'] = [
+      '#title' => $this->t('Icon Bundle'),
       '#type' => 'select',
       '#description' => t('Choose the icon bundle to display the icons using the autocomplete.'),
       '#default_value' => key($icon_bundle), //$items[$delta]->get('bundle')->getValue(),
@@ -63,14 +72,15 @@ class IconFieldWidget extends WidgetBase {
         'wrapper' => $form_field_id,
       ],
     ];
+    */
 
     $element['icon'] = [
-      '#title' => $this->t('Search Icon'),
+      '#title' => $this->t('Icon name'), //$this->t('Search Icon'),
       '#type' => 'textfield',
       '#prefix' => '<div id="' . $form_field_id . '">',
       '#suffix' => '</div>',
       '#default_value' => $items[$delta]->get('icon')->getValue(),
-      '#autocomplete_route_name' => $form_state->getValue('bundle') ? $form_state->getValue('bundle') : key($icon_bundle),
+      //'#autocomplete_route_name' => $form_state->getValue('bundle') ? $form_state->getValue('bundle') : key($icon_bundle),
     ];
 
     $element['wrapper'] = [
@@ -81,27 +91,27 @@ class IconFieldWidget extends WidgetBase {
         'i' => t('i'),
         'span' => t('span'),
       ),
-      '#default_value' => '',
+      '#default_value' => $items[$delta]->get('wrapper')->getValue(),
     ];
 
     $element['wrapper_class'] = [
       '#type' => 'textfield',
       '#title' => t('Icon Wrapper Classes'),
       '#description' => t('A space separated list of CSS classes.'),
-      '#default_value' => '',
+      '#default_value' => $items[$delta]->get('wrapper_class')->getValue(),
     ];
 
     $element['use_link'] = [
       '#type' => 'checkbox',
       '#title' => t('Wrap Link around the Icon'),
       '#description' => t('When checked wraps an anchor tag with the link from the next field.'),
-      '#default_value' => '',
+      '#default_value' => $items[$delta]->get('use_link')->getValue(),
     ];
 
     $element['icon_link'] = [
       '#type' => 'textfield',
       '#title' => t('Icon Link'),
-      '#default_value' => '',
+      '#default_value' => $items[$delta]->get('icon_link')->getValue(),
       '#states' => [
         'visible' => [
           ':input[name="field_icon_field[' . $delta . '][use_link]"]' => [
@@ -110,8 +120,6 @@ class IconFieldWidget extends WidgetBase {
         ],
       ],
     ];
-
-    //ksm($form);
 
     return $element;
   }
@@ -133,9 +141,15 @@ class IconFieldWidget extends WidgetBase {
   }
 
   /**
+   * TODO: Improve the 'Search icon' textfield behavior for the correct auto-
+   * -complete behavior.
+   *
+   *
    * Returns the 'Search icon' textfield
    */
   public function updateIconField(array &$form, FormStateInterface $form_state) {
+
+    ksm($form);
     // Get the delta
     $delta = $form['#icon_field_delta'];
 
@@ -150,6 +164,9 @@ class IconFieldWidget extends WidgetBase {
 
     // Set the autocomplete route name to the current icon bundle key
     $icon_form['#autocomplete_route_name'] = $value;
+
+    // Set the default value
+    $icon_form['#value'] = '';
 
     // Set the autocomplete atttribute
     $icon_form['#attributes']['data-autocomplete-path'] = Url::fromRoute($value)->toString();
