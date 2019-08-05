@@ -49,7 +49,7 @@ class IconFieldFormatter extends FormatterBase {
 
     foreach($items as $delta => $item) {
       $elements[$delta] = [
-        '#type' => 'icon_field',
+        '#theme' => 'icon_field',
         '#bundle' => $item->bundle,
         '#icon' => $item->icon,
         '#wrapper' => $item->wrapper,
