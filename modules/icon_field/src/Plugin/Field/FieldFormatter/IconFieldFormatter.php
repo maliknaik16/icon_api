@@ -53,8 +53,8 @@ class IconFieldFormatter extends FormatterBase {
         '#bundle' => $item->bundle,
         '#icon' => $item->icon,
         '#wrapper' => $item->wrapper,
-        '#wrapper_classes' => $item->wrapper_classes,
-        '#link' => $item->link,
+        '#wrapper_classes' => $item->wrapper_class,
+        '#link' => $item->icon_link,
       ];
     }
 
