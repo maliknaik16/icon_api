@@ -1,0 +1,5 @@
+icon_api.structure:
+  title: 'Icon Bundles'
+  route_name: icon_api.overview
+  parent: system.admin_structure
+  description: 'Manage all the Icon bundles.'
