@@ -22,14 +22,15 @@ function fontawesome_bundle_page_attachments(array &$page) {
     $config_defaults = _fontawesome_bundle_defaults();
   }
   else {
+    $fa_defaults = _fontawesome_bundle_defaults();
     $config_defaults = [
-      'method' => $config_settings->get('method'),
-      'use_cdn' => $config_settings->get('use_cdn'),
-      'external_location' => $config_settings->get('external_location'),
-      'use_solid' => $config_settings->get('use_solid'),
-      'use_regular' => $config_settings->get('use_regular'),
-      'use_light' => $config_settings->get('use_light'),
-      'use_brand' => $config_settings->get('use_brand'),
+      'method' => $config_settings->get('method') ? $config_settings->get('method') : $fa_defaults['method'],
+      'use_cdn' => $config_settings->get('use_cdn') ? $config_settings->get('use_cdn') : $fa_defaults['use_cdn'],
+      'external_location' => $config_settings->get('external_location') ? $config_settings->get('external_location') : $fa_defaults['external_location'],
+      'use_solid' => $config_settings->get('use_solid') ? $config_settings->get('use_solid') : $fa_defaults['use_solid'],
+      'use_regular' => $config_settings->get('use_regular') ? $config_settings->get('use_regular') : $fa_defaults['use_regular'],
+      'use_light' => $config_settings->get('use_light') ? $config_settings->get('use_light') : $fa_defaults['use_light'],
+      'use_brand' => $config_settings->get('use_brand') ? $config_settings->get('use_brand') : $fa_defaults['use_brand'],
     ];
   }
 
@@ -124,7 +125,7 @@ function _fontawesome_bundle_get_file_path($libraries, $method, $style) {
 function _fontawesome_bundle_defaults() {
   return [
     'method' => 'svg',
-    'use_cdn' => FALSE,
+    'use_cdn' => TRUE,
     'external_location' => 'https://use.fontawesome.com/releases/v5.8.2/js/all.js',
     'use_solid' => TRUE,
     'use_regular' => FALSE,
