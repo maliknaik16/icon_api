@@ -91,7 +91,7 @@ class FontAwesomeSettingsForm extends ConfigFormBase {
     $form['external']['use_cdn'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Use External/Local file'),
-      '#default_value' => $config->get('use_cdn'),
+      '#default_value' => $config->get('use_cdn') ? $config->get('use_cdn') : TRUE,
     ];
 
     $form['external']['external_location'] = [
@@ -124,25 +124,28 @@ class FontAwesomeSettingsForm extends ConfigFormBase {
     $form['partial']['use_solid'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Load Solid Icons'),
-      '#description' => $this->t('Checking this field will load the font awesome icons from the <i>regular.js/regular.css</i>'),
-      '#default_value' => $config->get('use_solid'),
+      '#description' => $this->t('Checking this field will load the font awesome icons from the <i>solid.js/solid.css</i>'),
+      '#default_value' => $config->get('use_solid') ? $config->get('use_solid') : TRUE,
     ];
 
     $form['partial']['use_light'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Load Light Icons'),
       '#default_value' => $config->get('use_light'),
+      '#description' => $this->t('Checking this field will load the font awesome icons from the <i>light.js/light.css</i>'),
     ];
 
     $form['partial']['use_regular'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Load Regular Icons'),
       '#default_value' => $config->get('use_regular'),
+      '#description' => $this->t('Checking this field will load the font awesome icons from the <i>regular.js/regular.css</i>'),
     ];
     $form['partial']['use_brand'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Load Brand Icons'),
       '#default_value' => $config->get('use_brand'),
+      '#description' => $this->t('Checking this field will load the font awesome icons from the <i>brands.js/brands.css</i>'),
     ];
 
     return parent::buildForm($form, $form_state);
