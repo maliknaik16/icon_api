@@ -252,10 +252,13 @@ function icon_menu_form_alter(array &$form, FormStateInterface $form_state, $for
       '#description' => t('Choose whether to show the icon in breadcrumb links.'),
       '#default_value' => $config->get($tag . 'breadcrumb') ? $config->get($tag . 'breadcrumb') : FALSE,
       '#states' => [
-        'invisible' => [
-          ':input[name="icon_selector[icon]"]' => [
-            'value' => '',
+        'visible' => [
+          ':input[name="icon_selector[wrapper]"]' => [
+            'value' => ''
           ],
+          /*':input[name="icon_selector[icon]"]' => [
+            'value' => '',
+          ],*/
         ],
       ],
     );
