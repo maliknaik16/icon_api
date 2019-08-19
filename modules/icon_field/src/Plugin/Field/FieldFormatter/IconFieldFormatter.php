@@ -52,6 +52,7 @@ class IconFieldFormatter extends FormatterBase {
         '#theme' => 'icon_field',
         '#bundle' => $item->bundle,
         '#icon' => $item->icon,
+        '#icon_style' => \Drupal\icon_api\IconStyle::determinePrefix($item->bundle, $item->icon),
         '#wrapper' => $item->wrapper,
         '#wrapper_classes' => $item->wrapper_class,
         '#link' => $item->icon_link,

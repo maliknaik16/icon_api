@@ -14,6 +14,7 @@ function icon_field_theme($existing, $type, $theme, $path) {
       'variables' => [
         'bundle' => NULL,
         'icon' => NULL,
+        'icon_style' => NULL,
         'wrapper' => 'i',
         'wrapper_classes' => NULL,
         'link' => NULL,
