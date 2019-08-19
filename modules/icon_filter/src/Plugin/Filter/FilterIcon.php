@@ -39,6 +39,7 @@ class FilterIcon extends FilterBase {
             '#theme' => 'icon_api',
             '#bundle' => $match[1],
             '#icon' => $match[2],
+            '#icon_style' => \Drupal\icon_api\IconStyle::determinePrefix($match[1], $match[2]),
           ];
         }
       }

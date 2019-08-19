@@ -9,6 +9,7 @@ function icon_api_theme($existing, $type, $theme, $path) {
       'variables' => [
         'bundle' => NULL,
         'icon' => NULL,
+        'icon_style' => NULL,
         'attributes' => array(),
         'wrapper' => 'i'
       ],

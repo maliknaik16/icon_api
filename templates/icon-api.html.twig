@@ -5,4 +5,4 @@
 {% if attributes is empty %}
   {% set default_class = 'fa-2x' %}
 {% endif %}
-<{{ wrapper }} class="fa fa-{{ icon }} {{ default_class }} {{ attributes|join(' ') }}"></{{ wrapper }}>
+<{{ wrapper }} class="{{ icon_style }} fa-{{ icon }} {{ default_class }} {{ attributes|join(' ') }}"></{{ wrapper }}>
