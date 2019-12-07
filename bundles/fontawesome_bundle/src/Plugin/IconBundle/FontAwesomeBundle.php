@@ -1,15 +1,17 @@
 <?php
 
+namespace Drupal\fontawesome_bundle\Plugin\IconBundle;
+
 /**
  * @file
- * Contains Drupal\fontawesome_bundle\Plugin\IconBundle\FontAwesomeBundle
+ * Contains Drupal\fontawesome_bundle\Plugin\IconBundle\FontAwesomeBundle.
  */
-
-namespace Drupal\fontawesome_bundle\Plugin\IconBundle;
 
 use Drupal\icon_api\IconBundleBase;
 
 /**
+ * IconBundle plugin.
+ *
  * @IconBundle(
  *  id = "fontawesome_bundle",
  *  label = @Translation("Font Awesome Bundle"),
@@ -18,12 +20,13 @@ use Drupal\icon_api\IconBundleBase;
  *  config_route = "fontawesome_bundle.settings",
  * )
  */
-
 class FontAwesomeBundle extends IconBundleBase {
+
   /**
    * {@inheritdoc}
    */
   public function getConfigRoute() {
     return parent::getConfigRoute();
   }
+
 }

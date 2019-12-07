@@ -1,42 +1,43 @@
 <?php
 
+namespace Drupal\fontawesome_bundle;
+
 /**
  * @file
- * Contains Drupal\fontawesome_bundle\IconStyle
+ * Contains Drupal\fontawesome_bundle\IconStyle.
  */
-
-namespace Drupal\fontawesome_bundle;
 
 use Symfony\Component\Yaml\Yaml;
 
 /**
- * Provides functions to determine the icon style
+ * Provides functions to determine the icon style.
  */
 class IconStyle {
 
   /**
-   * Returns the icon style from the icon name
+   * Returns the icon style from the icon name.
    *
    * @param string $icon_name
-   *  Name of the icon
+   *   Name of the icon.
    *
    * @return string
-   *  Icon style prefix
+   *   Icon style prefix.
    */
   public static function determineIconStyle($icon_name) {
 
-    // Get the path for the icons.yml file
+    // Get the path for the icons.yml file.
     $path = drupal_get_path('module', 'fontawesome_bundle') . '/metadata/icons.yml';
 
-    if(!file_exists($path)) {
+    if (!file_exists($path)) {
       return 'fas';
     }
 
-    foreach(Yaml::parse(file_get_contents($path)) as $name => $data) {
-      if(strcmp(strtolower($icon_name), $name) == 0) {
+    foreach (Yaml::parse(file_get_contents($path)) as $name => $data) {
+      if (strcmp(strtolower($icon_name), $name) == 0) {
         return FontAwesomeIconData::determinePrefix($data['styles']);
       }
     }
     return 'fas';
   }
+
 }
