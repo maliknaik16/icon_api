@@ -1,14 +1,17 @@
 <?php
 
+namespace Drupal\icon_api;
+
 /**
  * @file
- * Contains Drupal\icon_api\IconBundleBase
+ * Contains Drupal\icon_api\IconBundleBase.
  */
-
-namespace Drupal\icon_api;
 
 use Drupal\Component\Plugin\PluginBase;
 
+/**
+ * Implements plugin functions.
+ */
 class IconBundleBase extends PluginBase implements IconBundleInterface {
 
   /**

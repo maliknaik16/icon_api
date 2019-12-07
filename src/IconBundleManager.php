@@ -1,11 +1,12 @@
 <?php
 
+namespace Drupal\icon_api;
+
 /**
  * @file
- * Contains Drupal\icon_api\IconBundleManager
+ * Contains Drupal\icon_api\IconBundleManager.
  */
 
-namespace Drupal\icon_api;
 
 use Drupal\Core\Plugin\DefaultPluginManager;
 use Drupal\Core\Cache\CacheBackendInterface;
@@ -13,9 +14,8 @@ use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\icon_api\Annotation\IconBundle;
 
 /**
- * Provides the Icon bundle plugin manager
+ * Provides the Icon bundle plugin manager.
  */
-
 class IconBundleManager extends DefaultPluginManager {
 
   /**
@@ -25,7 +25,7 @@ class IconBundleManager extends DefaultPluginManager {
    *   An object that implements \Traversable which contains the root paths
    *   keyed by the corresponding namespace to look for plugin implementations.
    * @param \Drupal\Core\Cache\CacheBackendInterface $cache_backend
-   *  Cache backend instance to use.
+   *   Cache backend instance to use.
    * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
    *   The module handler to invoke the alter hook with.
    */
@@ -35,4 +35,5 @@ class IconBundleManager extends DefaultPluginManager {
     $this->alterInfo('icon_bundle_info');
     $this->setCacheBackend($cache_backend, 'icon_bundle_plugins');
   }
+
 }

@@ -1,11 +1,11 @@
 <?php
 
+namespace Drupal\icon_api\Controller;
+
 /**
  * @file
- * Contains Drupal\icon_api\Controller\IconBundleController
+ * Contains Drupal\icon_api\Controller\IconBundleController.
  */
-
-namespace Drupal\icon_api\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -13,11 +13,11 @@ use Drupal\icon_api\IconBundleManager;
 use Drupal\Core\Url;
 
 /**
- * Renders plugins of Icon
+ * Renders plugins of Icon.
  */
 class IconBundleController extends ControllerBase {
   /**
-   * The icons bundle manager
+   * The icons bundle manager.
    *
    * @var \Drupal\icon_api\IconBundleManager
    */
@@ -31,27 +31,27 @@ class IconBundleController extends ControllerBase {
   }
 
   /**
-   * IconBundleController constructor
+   * IconBundleController constructor.
    *
    * @param \Drupal\icon_api\IconBundleManager $iconBundleManager
-   *  The icon bundle manager.
+   *   The icon bundle manager.
    */
   public function __construct(IconBundleManager $iconBundleManager) {
     $this->iconBundleManager = $iconBundleManager;
   }
 
   /**
-   * Renders the list of plugins for icon bundles
+   * Renders the list of plugins for icon bundles.
    *
    * @return array
-   *  Render array with the icon bundles
+   *   Render array with the icon bundles.
    */
   public function plugins() {
     $bundles = $this->iconBundleManager->getDefinitions();
 
     $data = [];
 
-    foreach($bundles as $bundle) {
+    foreach ($bundles as $bundle) {
       $data[$bundle['id']] = $this->buildRow($bundle);
     }
 
@@ -59,35 +59,36 @@ class IconBundleController extends ControllerBase {
       '#theme' => 'table',
       '#header' => $this->buildHeader(),
       '#rows' => $data,
-      '#empty' => $this->t('There are no Icon bundles enabled.')
+      '#empty' => $this->t('There are no Icon bundles enabled.'),
     ];
 
     return $form;
   }
 
   /**
-   * Builds the header row for the plugin
+   * Builds the header row for the plugin.
    *
    * @return array
-   *  a render array for the table header
+   *   a render array for the table header.
    */
   public function buildHeader() {
     $header = [
       $this->t('Bundle Name'),
       $this->t('Bundle Machine Name'),
-      $this->t('Operations')
+      $this->t('Operations'),
     ];
 
     return $header;
   }
 
   /**
-   * Builds the row for the icon bundle plugin
+   * Builds the row for the icon bundle plugin.
    *
    * @param \Drupal\icon_api\IconBundleManager $bundle
-   *  The plugin definition
+   *   The plugin definition.
+   *
    * @return array
-   *  A render array structure of fields or columns
+   *   A render array structure of fields or columns.
    */
   public function buildRow($bundle) {
     $row = [
@@ -101,7 +102,7 @@ class IconBundleController extends ControllerBase {
       'bundle_machine' => [
         'data' => [
           '#type' => 'markup',
-          '#prefix' => '<span>' . $bundle['id'] . '</span>'
+          '#prefix' => '<span>' . $bundle['id'] . '</span>',
         ],
       ],
       'operations' => [

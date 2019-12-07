@@ -1,7 +1,12 @@
 <?php
 
 /**
- * Implements hook_theme()
+ * @file
+ * Implements icon_api theme hook.
+ */
+
+/**
+ * Implements hook_theme().
  */
 function icon_api_theme($existing, $type, $theme, $path) {
   return [
@@ -10,8 +15,8 @@ function icon_api_theme($existing, $type, $theme, $path) {
         'bundle' => NULL,
         'icon' => NULL,
         'icon_style' => NULL,
-        'attributes' => array(),
-        'wrapper' => 'i'
+        'attributes' => [],
+        'wrapper' => 'i',
       ],
     ],
   ];

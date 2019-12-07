@@ -1,36 +1,37 @@
 <?php
 
+namespace Drupal\icon_api;
+
 /**
  * @file
- * Provides Drupal\icon_api\IconBundleInterface
+ * Provides Drupal\icon_api\IconBundleInterface.
  */
-
-namespace Drupal\icon_api;
 
 use Drupal\Component\Plugin\PluginInspectionInterface;
 
 /**
- * Provides an interface for the Icon bundle plugins
+ * Provides an interface for the Icon bundle plugins.
  */
 interface IconBundleInterface extends PluginInspectionInterface {
 
   /**
-   * Returns the label
+   * Returns the label.
    */
   public function getLabel();
 
   /**
-   * Returns the description
+   * Returns the description.
    */
   public function getDescription();
 
   /**
-   * Returns the autocomplete route
+   * Returns the autocomplete route.
    */
   public function getAutocompleteRoute();
 
   /**
-   * Returns the autocomplete route
+   * Returns the autocomplete route.
    */
   public function getConfigRoute();
+
 }

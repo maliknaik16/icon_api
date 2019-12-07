@@ -15,14 +15,14 @@ use Drupal\Component\Annotation\Plugin;
 class IconBundle extends Plugin {
 
   /**
-   * The plugin machine name
+   * The plugin machine name.
    *
    * @var string
    */
   public $id;
 
   /**
-   * The label of the plugin
+   * The label of the plugin.
    *
    * @var \Drupal\Core\Annotation\Translation
    *
@@ -31,7 +31,7 @@ class IconBundle extends Plugin {
   public $label;
 
   /**
-   * The description of the plugin
+   * The description of the plugin.
    *
    * @var \Drupal\Core\Annotation\Translation
    *
@@ -40,16 +40,17 @@ class IconBundle extends Plugin {
   public $description;
 
   /**
-   * The route for the bundle form
+   * The route for the bundle form.
    *
    * @var string
    */
   public $autocomplete_route;
 
   /**
-   * The route of the autcomplete controller
+   * The route of the autcomplete controller.
    *
    * @var string
    */
   public $config_route;
+
 }
