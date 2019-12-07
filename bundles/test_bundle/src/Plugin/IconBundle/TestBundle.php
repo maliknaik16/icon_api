@@ -1,15 +1,17 @@
 <?php
 
+namespace Drupal\test_bundle\Plugin\IconBundle;
+
 /**
  * @file
- * Contains Drupal\test_bundle\Plugin\IconBundle\TestBundle
+ * Contains Drupal\test_bundle\Plugin\IconBundle\TestBundle.
  */
-
-namespace Drupal\test_bundle\Plugin\IconBundle;
 
 use Drupal\icon_api\IconBundleBase;
 
 /**
+ * TestBundle plugin.
+ *
  * @IconBundle(
  *  id = "test_bundle",
  *  label = @Translation("Test Bundle"),
@@ -18,12 +20,13 @@ use Drupal\icon_api\IconBundleBase;
  *  config_route = "test_bundle.settings",
  * )
  */
-
 class TestBundle extends IconBundleBase {
+
   /**
    * {@inheritdoc}
    */
   public function getConfigRoute() {
     return parent::getConfigRoute();
   }
+
 }

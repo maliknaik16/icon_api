@@ -1,23 +1,24 @@
 <?php
 
+namespace Drupal\test_bundle\Controller;
+
 /**
  * @file
- * Contains Drupal\test_bundle\Controller\AutocompleteController
+ * Contains Drupal\test_bundle\Controller\AutocompleteController.
  */
-
-namespace Drupal\test_bundle\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
- * Defines a controller for autocomplete form elements
+ * Defines a controller for autocomplete form elements.
  */
 class AutocompleteController extends ControllerBase {
+
   /**
-   * Handler for autocomplete request
+   * Handler for autocomplete request.
    */
-   public function handleIcons() {
+  public function handleIcons() {
     $response = [];
 
     $response[] = [
@@ -26,5 +27,6 @@ class AutocompleteController extends ControllerBase {
     ];
 
     return new JsonResponse($response);
-   }
+  }
+
 }

@@ -1,11 +1,11 @@
 <?php
 
+namespace Drupal\test_bundle\Form;
+
 /**
  * @file
- * Contains Drupal\test_bundle\Form
+ * Contains Drupal\test_bundle\Form.
  */
-
-namespace Drupal\test_bundle\Form;
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Form\ConfigFormBase;
@@ -14,12 +14,12 @@ use Drupal\Core\Asset\LibraryDiscovery;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Class Drupal\test_bundle\Form\TestSettingsForm
+ * Class Drupal\test_bundle\Form\TestSettingsForm.
  */
 class TestSettingsForm extends ConfigFormBase {
 
   /**
-   * Drupal LibraryDiscovery service container
+   * Drupal LibraryDiscovery service container.
    *
    * @var \Drupal\Core\Asset\LibraryDiscovery
    */
@@ -46,7 +46,7 @@ class TestSettingsForm extends ConfigFormBase {
    */
   protected function getEditableConfigNames() {
     return [
-      'test_bundle.settings'
+      'test_bundle.settings',
     ];
   }
 
@@ -61,7 +61,7 @@ class TestSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    // Get settings
+    // Get settings.
     $config = $this->config('test_bundle.settings');
 
     $libraryInfo = $this->libraryDiscovery->getLibraryByName('test_bundle', 'test_bundle.svg');
@@ -71,7 +71,7 @@ class TestSettingsForm extends ConfigFormBase {
       '#title' => 'Bundle Method',
       '#options' => [
         'svg' => 'SVG With JS',
-        'webfonts' => 'Web Fonts with CSS'
+        'webfonts' => 'Web Fonts with CSS',
       ],
       '#default_value' => $config->get('method'),
       '#description' => $this->t('This setting controls the way font awesome works.'),
@@ -85,7 +85,7 @@ class TestSettingsForm extends ConfigFormBase {
       '#collapsible' => TRUE,
       '#collapsed' => FALSE,
       '#access' => TRUE,
-      '#description' => $this->t('These settings controls whether to use the path specified for the icon library file.')
+      '#description' => $this->t('These settings controls whether to use the path specified for the icon library file.'),
     ];
 
     $form['external']['use_cdn'] = [
@@ -154,8 +154,8 @@ class TestSettingsForm extends ConfigFormBase {
   public function validateForm(array &$form, FormStateInterface $form_state) {
     $values = $form_state->getValues()['external'];
 
-    // Validate URL
-    if(empty($values['external_location']) || !UrlHelper::isValid($values['external_location'], TRUE)) {
+    // Validate URL.
+    if (empty($values['external_location']) || !UrlHelper::isValid($values['external_location'], TRUE)) {
       $form_state->setErrorByName('external_location', $this->t('Invalid library location provided.'));
     }
   }
@@ -166,22 +166,22 @@ class TestSettingsForm extends ConfigFormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $values = $form_state->getValues();
 
-    // Load fontawesome libraries
+    // Load fontawesome libraries.
     $fontawesome_library = $this->libraryDiscovery->getLibraryByName('test_bundle', 'test_bundle.svg');
 
-    // Default location of the library
+    // Default location of the library.
     $default_location = 'https://use.fontawesome.com/releases/v' . $fontawesome_library['version'] . '/';
 
     $default_svg_location = $default_location . 'js/all.js';
     $default_webfonts_location = $default_location . 'css/all.css';
 
-    if($values['external']['use_cdn']) {
-      if(empty($values['external']['external_location'])) {
+    if ($values['external']['use_cdn']) {
+      if (empty($values['external']['external_location'])) {
         $values['external']['external_location'] = ($values['method'] == 'webfonts') ? $default_webfonts_location : $default_svg_location;
       }
     }
 
-    // Save the settings
+    // Save the settings.
     $this->config('test_bundle.settings')
       ->set('method', $values['method'])
       ->set('use_cdn', $values['external']['use_cdn'])
@@ -194,4 +194,5 @@ class TestSettingsForm extends ConfigFormBase {
 
     parent::submitForm($form, $form_state);
   }
+
 }
